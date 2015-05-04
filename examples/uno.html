@@ -14,7 +14,7 @@
 <div class="text-center col-md-12">
     <h1>Grafica financiera n1</h1>
 
-    <div id="c3-periodos"></div>
+    <div id="chart-header"></div>
     <div id="chart"></div>
 </div>
 
@@ -45,12 +45,12 @@
             tipo: "dia",
             seleccionado: false
         }, {
-            texto: "3m",
+            texto: "3M",
             cantidad: 3,
             tipo: "mes",
             seleccionado: false
         }, {
-            texto: "6m",
+            texto: "6M",
             cantidad: 6,
             tipo: "mes",
             seleccionado: false
@@ -90,12 +90,12 @@
         x: 'x',
         columns: [
             ['x', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06'],
-            ['data1', 852, 384, 395, 902, 384, 852],
-            ['data2', 130, 340, 200, 500, 780, 597]
+            ['MAXCOM', 852, 384, 395, 902, 384, 852],
+            ['IPC', 130, 340, 200, 500, 780, 597]
         ]
     };
 
-    var p = new M("#c3-periodos", periodos);
+    var p = new StockTools("#chart-header", periodos);
 
     var chart = c3.generate({
         data: datos,
@@ -105,6 +105,12 @@
                 tick: {
                     format: formato
                 }
+            },
+            subchart: {
+                show: true
+            },
+            zoom: {
+                enabled: true
             }
         }
     });
