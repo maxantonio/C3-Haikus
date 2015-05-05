@@ -1,3 +1,4 @@
+//Este modulo es dependiente de, D3,C3,Polyglot
 var StockTools = function (raiz, periodos) {
     'use strict';
 
@@ -20,14 +21,14 @@ var StockTools = function (raiz, periodos) {
             .style('float', 'left');
 
         // Crea el texto y el input para la fecha inicial
-        intervalos.append("span").text("Desde: ");
+        intervalos.append("span").text(i18n.t("from"));
         intervalos.append("input")
             .attr("type", "text")
             .attr("name", "inicio")
             .attr("id", "inicio");
 
         // Crea el texto y el input para la fecha final
-        intervalos.append("span").text("Hasta: ");
+        intervalos.append("span").text(i18n.t("to"));
         intervalos.append("input")
             .attr("type", "text")
             .attr("name", "fin")

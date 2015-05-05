@@ -9,7 +9,7 @@ module.exports = function(grunt) {
         separator: ';',
       },
       dist: {
-        src: ['src/core.js', 'src/date_range.js'],
+        src: ['src/core.js', 'src/polyglot.js', 'src/core_translations.js','src/date_range.js', 'src/date_grids.js'],
         dest: 'build/c3haikus.js',
       },
     },

@@ -12,109 +12,87 @@
 </head>
 <body>
 <div class="text-center col-md-12">
-    <h1>Grafica financiera n1</h1>
+    <h1>Grafica de precios n1</h1>
 
     <div id="chart-header"></div>
     <div id="chart"></div>
 </div>
 
-<div class="col-md-12">
 
-</div>
-
-
-<script src="../build/d3.v3.min.js" charset="utf-8"></script>
-<script src="vendor/c3.js"></script>
-<script src="../src/date_range.js"></script>
 <script>
-
-    var periodos = [
-        {
-            texto: "1D",
-            cantidad: 1,
-            tipo: "dia",
-            seleccionado: true
-        }, {
-            texto: "2D",
-            cantidad: 2,
-            tipo: "dia",
-            seleccionado: false
-        }, {
-            texto: "4D",
-            cantidad: 4,
-            tipo: "dia",
-            seleccionado: false
-        }, {
-            texto: "3M",
-            cantidad: 3,
-            tipo: "mes",
-            seleccionado: false
-        }, {
-            texto: "6M",
-            cantidad: 6,
-            tipo: "mes",
-            seleccionado: false
-        }, {
-            texto: "YTD",
-            cantidad: 0,
-            tipo: "hasta_la_fecha",
-            seleccionado: false
-        }, {
-            texto: "1Y",
-            cantidad: 1,
-            tipo: "anno",
-            seleccionado: false
-        }, {
-            texto: "2Y",
-            cantidad: 2,
-            tipo: "anno",
-            seleccionado: false
-        }, {
-            texto: "5Y",
-            cantidad: 5,
-            tipo: "anno",
-            seleccionado: false
-        }, {
-            texto: "10Y",
-            cantidad: 10,
-            tipo: "anno",
-            seleccionado: false
-        }
-    ];
-    var formato = '%Y-%m-%d';
-    var parseDate = d3.time.format(formato).parse;
-    var formatDate = d3.time.format(formato);
+  var locale = "es";
+  var formato = '%Y-%m-%d';
 
 
-    var datos = {
-        x: 'x',
-        columns: [
-            ['x', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06'],
-            ['MAXCOM', 852, 384, 395, 902, 384, 852],
-            ['IPC', 130, 340, 200, 500, 780, 597]
-        ]
-    };
+  var periodos = [
+  {
+    texto: "1D",
+    cantidad: 1,
+    tipo: "dia",
+    seleccionado: true
+  }, {
+    texto: "2D",
+    cantidad: 2,
+    tipo: "dia",
+    seleccionado: false
+  }, {
+    texto: "4D",
+    cantidad: 4,
+    tipo: "dia",
+    seleccionado: false
+  }, {
+    texto: "3M",
+    cantidad: 3,
+    tipo: "mes",
+    seleccionado: false
+  }, {
+    texto: "6M",
+    cantidad: 6,
+    tipo: "mes",
+    seleccionado: false
+  }, {
+    texto: "YTD",
+    cantidad: 0,
+    tipo: "hasta_la_fecha",
+    seleccionado: false
+  }, {
+    texto: "1Y",
+    cantidad: 1,
+    tipo: "anno",
+    seleccionado: false
+  }, {
+    texto: "2Y",
+    cantidad: 2,
+    tipo: "anno",
+    seleccionado: false
+  }, {
+    texto: "5Y",
+    cantidad: 5,
+    tipo: "anno",
+    seleccionado: false
+  }, {
+    texto: "10Y",
+    cantidad: 10,
+    tipo: "anno",
+    seleccionado: false
+  }
+  ];
 
-    var p = new StockTools("#chart-header", periodos);
+  var datos = {
+    x: 'x',
+    columns: [
+    ['x', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06'],
+    ['Papas', 852, 384, 395, 902, 384, 852],
+    ['Ahuacates', 130, 340, 200, 500, 780, 597]
+    ]
+  };
 
-    var chart = c3.generate({
-        data: datos,
-        axis: {
-            x: {
-                type: 'timeseries',
-                tick: {
-                    format: formato
-                }
-            },
-            subchart: {
-                show: true
-            },
-            zoom: {
-                enabled: true
-            }
-        }
-    });
 
 </script>
+
+<script src="vendor/d3.v3.min.js" charset="utf-8"></script>
+<script src="vendor/c3.js"></script>
+<script src="../build/c3haikus.min.js"></script>
+<script src="uno.js"></script>
 </body>
 </html>
