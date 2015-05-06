@@ -20,74 +20,69 @@
 
 
 <script>
-  var locale = "es";
-  var formato = '%Y-%m-%d';
+    var locale = "es";
+    var formato = '%Y-%m-%d';
+    var total_datos = 65;
 
 
-  var periodos = [
-  {
-    texto: "1D",
-    cantidad: 1,
-    tipo: "dia",
-    seleccionado: true
-  }, {
-    texto: "2D",
-    cantidad: 2,
-    tipo: "dia",
-    seleccionado: false
-  }, {
-    texto: "4D",
-    cantidad: 4,
-    tipo: "dia",
-    seleccionado: false
-  }, {
-    texto: "3M",
-    cantidad: 3,
-    tipo: "mes",
-    seleccionado: false
-  }, {
-    texto: "6M",
-    cantidad: 6,
-    tipo: "mes",
-    seleccionado: false
-  }, {
-    texto: "YTD",
-    cantidad: 0,
-    tipo: "hasta_la_fecha",
-    seleccionado: false
-  }, {
-    texto: "1Y",
-    cantidad: 1,
-    tipo: "anno",
-    seleccionado: false
-  }, {
-    texto: "2Y",
-    cantidad: 2,
-    tipo: "anno",
-    seleccionado: false
-  }, {
-    texto: "5Y",
-    cantidad: 5,
-    tipo: "anno",
-    seleccionado: false
-  }, {
-    texto: "10Y",
-    cantidad: 10,
-    tipo: "anno",
-    seleccionado: false
-  }
-  ];
+    var periodos = [
+        {
+            texto: "1D",
+            cantidad: 1,
+            tipo: "dia",
+            seleccionado: true
+        }, {
+            texto: "2D",
+            cantidad: 2,
+            tipo: "dia",
+            seleccionado: false
+        }, {
+            texto: "4D",
+            cantidad: 4,
+            tipo: "dia",
+            seleccionado: false
+        }, {
+            texto: "1M",
+            cantidad: 1,
+            tipo: "mes",
+            seleccionado: false
+        }, {
+            texto: "2M",
+            cantidad: 2,
+            tipo: "mes",
+            seleccionado: false
+        }, {
+            texto: "YTD",
+            cantidad: 0,
+            tipo: "hasta_la_fecha",
+            seleccionado: false
+        }, {
+            texto: "1Y",
+            cantidad: 1,
+            tipo: "anno",
+            seleccionado: false
+        }, {
+            texto: "2Y",
+            cantidad: 2,
+            tipo: "anno",
+            seleccionado: false
+        }, {
+            texto: "5Y",
+            cantidad: 5,
+            tipo: "anno",
+            seleccionado: false
+        }, {
+            texto: "10Y",
+            cantidad: 10,
+            tipo: "anno",
+            seleccionado: false
+        }
+    ];
 
-  var datos = {
-    x: 'x',
-    columns: [
-    ['x', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06'],
-    ['Papas', 852, 384, 395, 902, 384, 852],
-    ['Ahuacates', 130, 340, 200, 500, 780, 597]
-    ]
-  };
-
-
+    var datos = {
+        x: 'x',
+        columns: []
+    };
 </script>
 
 <script src="vendor/d3.v3.min.js" charset="utf-8"></script>

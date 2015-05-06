@@ -128,6 +128,10 @@ var StockTools = function (raiz, periodos) {
         function Intervalo_Correcto(inicioDatos, finDatos, fechaInicio, fechaFin) {
             return fechaInicio >= inicioDatos && fechaFin <= finDatos;
         }
+
+        function Ajustar_grids_X() {
+
+        }
     }
 
 };
