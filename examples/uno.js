@@ -59,7 +59,7 @@ var chart = c3.generate({
 //chart.hide('IPC', {withLegend: true});
 //chart.hide('YAHOO', {withLegend: true});
 
-//Elimina los datos correspondientes de esta grafica
+//Quita los datos correspondientes de esta grafica
 chart.unload({
     ids: ['IPC', 'YAHOO']
 });

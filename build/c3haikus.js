@@ -315,6 +315,7 @@ var StockTools = function (raiz, periodos) {
     //actual simbolo que se esta comparando
     var current_selected_value = "";
     var ids = [];
+    var comparando = false;
 
     //Crea los componentes
     init();
@@ -339,14 +340,16 @@ var StockTools = function (raiz, periodos) {
         intervalos.append("input")
             .attr("type", "text")
             .attr("name", "inicio")
-            .attr("id", "inicio");
+            .attr("id", "inicio")
+            .attr('value', datos.columns[0][1]);
 
         // Crea el texto y el input para la fecha final
         intervalos.append("span").text(i18n.t("to"));
         intervalos.append("input")
             .attr("type", "text")
             .attr("name", "fin")
-            .attr("id", "fin");
+            .attr("id", "fin")
+            .attr('value', datos.columns[0][datos.columns[0].length - 1]);
 
         // Div contenedor de los botones
         var botones = header.append("div")
@@ -455,15 +458,15 @@ var StockTools = function (raiz, periodos) {
                 throw new Error("No hay datos para este intervalo");
         }
 
-        function m_updateGrafica(fechaInicio, fechafin) {
-            chart.axis.min({x: formatDate(fechaInicio)});
-            chart.axis.max({x: formatDate(fechafin)});
-        }
-
         function e_update_click() {
             var fechaInicio = parseDate(document.getElementById("inicio").value);
             var fechaFin = parseDate(document.getElementById("fin").value);
             m_updateGrafica(fechaInicio, fechaFin);
+        }
+
+        function m_updateGrafica(fechaInicio, fechafin) {
+            chart.axis.min({x: formatDate(fechaInicio)});
+            chart.axis.max({x: formatDate(fechafin)});
         }
 
         //Dev true si las fechas estan en el intervalo de los datos
@@ -475,10 +478,6 @@ var StockTools = function (raiz, periodos) {
             fechaFin || (fechaFin = finDatos);
 
             return fechaInicio >= inicioDatos && fechaFin <= finDatos;
-        }
-
-        function Ajustar_grids_X() {
-
         }
 
         //return la pos donde se encuentra esta fecha en los datos originales
@@ -500,25 +499,35 @@ var StockTools = function (raiz, periodos) {
                         t = +t.toFixed(2);
                         result.push(t);
                     } else {
-                        result.push(0);
+                        result.push(null);
                     }
                 }
             });
             return result;
         }
 
+        //Restaura la grafica completamente
+        function m_restaurar_grafica() {
+
+            //Si  estan comparando
+            if (comparando) {
+                chart.load({
+                    columns: [
+                        datos.columns[1]
+                    ],
+                    unload: [current_selected_value]
+                });
+            } else {
+                alert("no estas comparando");
+            }
+        }
+
+        //Click en el select para comparar
         function e_comparar_click() {
 
+            var last = "";
             if (current_selected_value != "") {
-                console.info("Quitar: " + current_selected_value);
-                chart.unload(current_selected_value);
-                //chart.unload({
-                //    ids: [current_selected_value]
-                //});
-
-                //chart.hide({
-                //    ids: ids.slice(1)
-                //});
+                last = current_selected_value;
             }
 
             var empresa = this.options[this.selectedIndex].value;
@@ -532,6 +541,7 @@ var StockTools = function (raiz, periodos) {
 
                 // Si se selecciona cualquier opcion menos (Seleccione)
                 if (this.selectedIndex != 0) {
+                    comparando = true;
                     current_selected_value = empresa;
 
                     //esta es los datos de comparacion de la 1ra empresa, que es la que se compara con las demas
@@ -540,17 +550,23 @@ var StockTools = function (raiz, periodos) {
                     var r2 = m_calcular_comparacion(empresa, (this.selectedIndex + 1), document.getElementById("inicio").value, document.getElementById("fin").value);
                     datos_a_cargar.push(r1);
                     datos_a_cargar.push(r2);
-                    chart.load({columns: datos_a_cargar});
+                    if (last != "") {
+                        chart.load({
+                            columns: datos_a_cargar,
+                            unload: [last]
+                        });
+                    } else {
+                        chart.load({columns: datos_a_cargar});
+                    }
                 } else {
+                    m_restaurar_grafica(fechaInicio, fechaFin);
                     current_selected_value = "";
-                    //TODO restaurar la grafica a los datos que tenia antes de comparar
-                    //alert("Restaurar la grafica, No esta implementado todavia")
+                    comparando = false;
                 }
 
 
             } else
                 throw new Error("Intervalo incorrecto");
-
 
         }
     }
