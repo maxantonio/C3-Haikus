@@ -6,6 +6,8 @@ i18n.extend({
   //English
   "from": "From",
   "to": "To",
+  "select": "Select",
+
 
 });
 
@@ -13,5 +15,6 @@ if (i18n.locale() == "es") i18n.extend({
   //Spanish
   "from": "Desde",
   "to": "Hasta",
+   "select": "Selecione",
 
 });

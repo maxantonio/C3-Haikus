@@ -1,18 +1,20 @@
 //configuracion de este estilo de grafica
 var parseDate = d3.time.format(formato).parse;
 var formatDate = d3.time.format(formato);
-
-
-var p = new StockTools("#chart-header", periodos);
+var bisect = d3.bisector(function (d) {
+    return parseDate(d);
+}).left;
 
 
 datos_aleatorios(total_datos);
+var p = new StockTools("#chart-header", periodos);
 
 //Genera datos aleatorios a partir de la fecha actual hacia atras
 function datos_aleatorios(cant) {
     var fechas = ["x"];
     var maxcom = ["MAXCOM"];
     var ipc = ["IPC"];
+    var yahoo = ["YAHOO"];
 
     var fecha = new Date();
     fecha.setDate(fecha.getDate() - cant);
@@ -22,9 +24,11 @@ function datos_aleatorios(cant) {
         fechas.push(formatDate(fecha));
         maxcom.push(Math.floor((Math.random() * 900) + 200));
         ipc.push(Math.floor((Math.random() * 900) + 200));
+        yahoo.push(Math.floor((Math.random() * 900) + 200));
     }
 
-    datos.columns = [fechas, maxcom, ipc];
+    datos.columns = [fechas, maxcom, ipc, yahoo];
+    // datos.hide = ["IPC"]; asi tambien la puedo ocultar pero no se oculto de la leyenda
 }
 
 
@@ -39,7 +43,7 @@ var chart = c3.generate({
         }
     },
     zoom: {
-        enabled: true
+        enabled: false
     },
     grid: {
         x: {
@@ -49,4 +53,13 @@ var chart = c3.generate({
             show: true
         }
     }
+});
+
+//Oculta todas menos la principal
+//chart.hide('IPC', {withLegend: true});
+//chart.hide('YAHOO', {withLegend: true});
+
+//Elimina los datos correspondientes de esta grafica
+chart.unload({
+    ids: ['IPC', 'YAHOO']
 });
