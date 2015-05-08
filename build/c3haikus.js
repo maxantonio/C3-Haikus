@@ -296,6 +296,8 @@ i18n.extend({
   //English
   "from": "From",
   "to": "To",
+  "select": "Select",
+
 
 });
 
@@ -303,10 +305,16 @@ if (i18n.locale() == "es") i18n.extend({
   //Spanish
   "from": "Desde",
   "to": "Hasta",
+   "select": "Selecione",
 
 });
-;var StockTools = function (raiz, periodos) {
+;//Este modulo es dependiente de, D3,C3,Polyglot
+var StockTools = function (raiz, periodos) {
     'use strict';
+
+    //actual simbolo que se esta comparando
+    var current_selected_value = "";
+    var ids = [];
 
     //Crea los componentes
     init();
@@ -331,14 +339,16 @@ if (i18n.locale() == "es") i18n.extend({
         intervalos.append("input")
             .attr("type", "text")
             .attr("name", "inicio")
-            .attr("id", "inicio");
+            .attr("id", "inicio")
+            .attr('value', datos.columns[0][1]);
 
         // Crea el texto y el input para la fecha final
         intervalos.append("span").text(i18n.t("to"));
         intervalos.append("input")
             .attr("type", "text")
             .attr("name", "fin")
-            .attr("id", "fin");
+            .attr("id", "fin")
+            .attr('value', datos.columns[0][datos.columns[0].length - 1]);
 
         // Div contenedor de los botones
         var botones = header.append("div")
@@ -350,7 +360,35 @@ if (i18n.locale() == "es") i18n.extend({
             .attr("id", "update")
             .attr("type", "button")
             .text("Actualizar")
-            .on('click', update_click);
+            .on('click', e_update_click);
+
+        // Botones para comparar
+        datos.columns.forEach(function (d, i) {
+            if (i > 0) {
+                ids.push(datos.columns[i][0]);
+            }
+        });
+        ids[0] = i18n.t("select");
+
+        var select = botones.append("select")
+            .attr("class", "c3_cmp");
+
+        select.selectAll("opciones")
+            .data(ids)
+            .enter()
+            .append("option")
+            .attr('class', 'opciones')
+            .attr('data-id', function (d) {
+                return d;
+            })
+            .attr('value', function (d) {
+                return d;
+            })
+            .text(function (d) {
+                return d;
+            });
+
+        select.on("change", e_comparar_click);
 
         header.append("div")
             .attr('class', 'c3-clear-header')
@@ -373,11 +411,11 @@ if (i18n.locale() == "es") i18n.extend({
             })
             .text(function (d) {
                 return d.texto;
-            }).on('click', click_periodo);
+            }).on('click', e_click_periodo);
 
 
         //Evento click  en un boton del periodo
-        function click_periodo() {
+        function e_click_periodo() {
 
             //Valor del periodo clickeado
             var cantidad = d3.select(this).attr("data-value");
@@ -410,8 +448,8 @@ if (i18n.locale() == "es") i18n.extend({
                     break;
             }
 
-            if (Intervalo_Correcto(inicioDatos, finDatos, fechaInicio, fechaFin)) {
-                updateGrafica(fechaInicio, fechaFin);
+            if (m_intervalo_Correcto(fechaInicio, fechaFin)) {
+                m_updateGrafica(fechaInicio, fechaFin);
                 document.getElementById("inicio").value = formatDate(fechaInicio);
                 document.getElementById("fin").value = formatDate(fechaFin);
             }
@@ -419,20 +457,116 @@ if (i18n.locale() == "es") i18n.extend({
                 throw new Error("No hay datos para este intervalo");
         }
 
-        function updateGrafica(fechaInicio, fechafin) {
+        function e_update_click() {
+            var fechaInicio = parseDate(document.getElementById("inicio").value);
+            var fechaFin = parseDate(document.getElementById("fin").value);
+            m_updateGrafica(fechaInicio, fechaFin);
+        }
+
+        function m_updateGrafica(fechaInicio, fechafin) {
             chart.axis.min({x: formatDate(fechaInicio)});
             chart.axis.max({x: formatDate(fechafin)});
         }
 
-        function update_click() {
-            var fechaInicio = parseDate(document.getElementById("inicio").value);
-            var fechaFin = parseDate(document.getElementById("fin").value);
-            updateGrafica(fechaInicio, fechaFin);
+        //Dev true si las fechas estan en el intervalo de los datos
+        //si no se especifica la fechaFin se entiende que es hasta la ultima fecha de los datos
+        function m_intervalo_Correcto(fechaInicio, fechaFin) {
+            var posLastDate = datos.columns[0].length - 1;
+            var inicioDatos = parseDate(datos.columns[0][1]);
+            var finDatos = parseDate(datos.columns[0][posLastDate]);
+            fechaFin || (fechaFin = finDatos);
+
+            return fechaInicio >= inicioDatos && fechaFin <= finDatos;
         }
 
-        //Dev true si las fechas estan en el intervalo de los datos
-        function Intervalo_Correcto(inicioDatos, finDatos, fechaInicio, fechaFin) {
-            return fechaInicio >= inicioDatos && fechaFin <= finDatos;
+        //return la pos donde se encuentra esta fecha en los datos originales
+        function m_buscarFecha(fecha) {
+            return datos.columns[0].indexOf(fecha);
+        }
+
+        function m_calcular_comparacion(empresa, posEmpresa, fechaInicio, fechaFin) {
+            var result = [empresa];
+            var posStart = m_buscarFecha(fechaInicio);
+            var posEnd = m_buscarFecha(fechaFin);
+
+            var baseValue = +datos.columns[posEmpresa][posStart];
+            datos.columns[posEmpresa].forEach(function (d, i) {
+                if (i > 0) {
+                    if (i >= posStart && i <= posEnd) {
+                        var currentValue = +d;
+                        var t = (currentValue / baseValue) - 1;
+                        t = +t.toFixed(2);
+                        result.push(t);
+                    } else {
+                        result.push(null);
+                    }
+                }
+            });
+            return result;
+        }
+
+        //Restaura la grafica completamente
+        function m_restaurar_grafica() {
+
+            //Si  estan comparando
+            if (comparando) {
+                chart.load({
+                    columns: [
+                        datos.columns[1]
+                    ],
+                    unload: [current_selected_value]
+                });
+            } else {
+                alert("no estas comparando");
+            }
+        }
+
+        //Click en el select para comparar
+        function e_comparar_click() {
+
+            var last = "";
+            if (current_selected_value != "") {
+                last = current_selected_value;
+            }
+
+            var empresa = this.options[this.selectedIndex].value;
+            console.info("Seleccionado: " + empresa);
+            var fechaInicio = parseDate(document.getElementById("inicio").value);
+            var fechaFin = parseDate(document.getElementById("fin").value);
+
+            var datos_a_cargar = [];
+
+            if (m_intervalo_Correcto(fechaInicio, fechaFin)) {
+
+                // Si se selecciona cualquier opcion menos (Seleccione)
+                if (this.selectedIndex != 0) {
+                    comparando = true;
+                    current_selected_value = empresa;
+
+                    //esta es los datos de comparacion de la 1ra empresa, que es la que se compara con las demas
+                    var r1 = m_calcular_comparacion(datos.columns[1][0], 1, document.getElementById("inicio").value, document.getElementById("fin").value);
+
+                    var r2 = m_calcular_comparacion(empresa, (this.selectedIndex + 1), document.getElementById("inicio").value, document.getElementById("fin").value);
+                    datos_a_cargar.push(r1);
+                    datos_a_cargar.push(r2);
+                    if (last != "") {
+                        chart.load({
+                            columns: datos_a_cargar,
+                            unload: [last]
+                        });
+                    } else {
+                        chart.load({columns: datos_a_cargar});
+                    }
+                } else {
+                    m_restaurar_grafica(fechaInicio, fechaFin);
+                    current_selected_value = "";
+                    comparando = false;
+                }
+
+
+            } else
+                throw new Error("Intervalo incorrecto");
+
         }
     }
 
