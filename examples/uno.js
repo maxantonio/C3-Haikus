@@ -47,9 +47,12 @@ var chart = c3.generate({
             tick: {
                 format: function (value) {
                     console.info(value);
+
+                    if (d3.format(",.2f")(value) == '-0.00')
+                        return "0%";
                     if (value != 0)
                         return comparando ? d3.format(",.2f")(value) + "%" : d3.format('s')(value);
-                    return value;
+                    return value + "%";
                 }
             }
         }
