@@ -5,7 +5,6 @@ var StockTools = function (raiz, periodos) {
     //actual simbolo que se esta comparando
     var current_selected_value = "";
     var ids = [];
-    var comparando = false;
 
     //Crea los componentes
     init();

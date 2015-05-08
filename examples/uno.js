@@ -5,6 +5,8 @@ var bisect = d3.bisector(function (d) {
     return parseDate(d);
 }).left;
 
+//Dice si actualmente se esta comparando o no
+var comparando = false;
 
 datos_aleatorios(total_datos);
 var p = new StockTools("#chart-header", periodos);
@@ -22,9 +24,9 @@ function datos_aleatorios(cant) {
     for (var i = 1; i <= cant; i++) {
         fecha.setDate(fecha.getDate() + 1);
         fechas.push(formatDate(fecha));
-        maxcom.push(Math.floor((Math.random() * 900) + 200));
-        ipc.push(Math.floor((Math.random() * 900) + 200));
-        yahoo.push(Math.floor((Math.random() * 900) + 200));
+        maxcom.push(Math.floor((Math.random() * 850) + 345));
+        ipc.push(Math.floor((Math.random() * 650) + 140));
+        yahoo.push(Math.floor((Math.random() * 780) + 354));
     }
 
     datos.columns = [fechas, maxcom, ipc, yahoo];
@@ -40,6 +42,16 @@ var chart = c3.generate({
             tick: {
                 format: formato
             }
+        },
+        y: {
+            tick: {
+                format: function (value) {
+                    console.info(value);
+                    if (value != 0)
+                        return comparando ? d3.format(",.2f")(value) + "%" : d3.format('s')(value);
+                    return value;
+                }
+            }
         }
     },
     zoom: {
@@ -51,6 +63,16 @@ var chart = c3.generate({
         },
         y: {
             show: true
+        }
+    },
+    tooltip: {
+        format: {
+            title: function (d) {
+                return d3.time.format("%a %d %b, %Y")(d)
+            },
+            value: function (value, ratio, id) {
+                return comparando ? value + "%" : d3.format(',')(value);
+            }
         }
     }
 });
