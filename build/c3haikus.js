@@ -460,7 +460,11 @@ var StockTools = function (raiz, periodos) {
         function e_update_click() {
             var fechaInicio = parseDate(document.getElementById("inicio").value);
             var fechaFin = parseDate(document.getElementById("fin").value);
-            m_updateGrafica(fechaInicio, fechaFin);
+            if (m_intervalo_Correcto(fechaInicio, fechaFin)) {
+                m_updateGrafica(fechaInicio, fechaFin);
+            }
+            else
+                throw new Error("Intervalo incorrecto.");
         }
 
         function m_updateGrafica(fechaInicio, fechafin) {

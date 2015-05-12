@@ -16,6 +16,7 @@
 
     <div id="chart-header"></div>
     <div id="chart"></div>
+    <div id="chart_bar"></div>
 </div>
 
 
@@ -81,14 +82,16 @@
 
     var datos = {
         x: 'x',
-        columns: []
+        columns: [],
+        type:"line",
+        types: {IPC: 'bar'}
     };
 </script>
 
 <script src="vendor/d3.v3.min.js" charset="utf-8"></script>
-<script src="vendor/c3.js"></script>
-<!--<script src="../build/c3haikus.js"></script>-->
-<script src="../build/c3haikus.min.js"></script>
+<script src="c3.js"></script>
+<script src="../build/c3haikus.js"></script>
+<!--<script src="../build/c3haikus.min.js"></script>-->
 <script src="uno.js"></script>
 </body>
 </html>
