@@ -18,6 +18,7 @@ function datos_aleatorios(cant) {
     var ipc = ["IPC"];
     var yahoo = ["YAHOO"];
 
+
     var fecha = new Date();
     fecha.setDate(fecha.getDate() - cant);
 
@@ -27,14 +28,81 @@ function datos_aleatorios(cant) {
         maxcom.push(Math.floor((Math.random() * 850) + 345));
         ipc.push(Math.floor((Math.random() * 650) + 140));
         yahoo.push(Math.floor((Math.random() * 780) + 354));
+
     }
 
     datos.columns = [fechas, maxcom, ipc, yahoo];
+    console.log(datos);
     // datos.hide = ["IPC"]; asi tambien la puedo ocultar pero no se oculto de la leyenda
 }
 
 
+var datosVenta = {
+    x: 'x',
+    columns: [
+        datos.columns[0],
+        datos.columns[1]
+    ],
+    type:'bar'
+
+};
+
+
+
+var chart2 = c3.generate({
+    bindto:'#chart2',
+    data: datosVenta ,
+    size: {
+        height: 100
+    },
+    axis: {
+        x: {
+            type: 'timeseries',
+            tick: {
+                format: formato
+            },height: 20
+        },
+        y: {
+            tick: {
+                format: function (value) {
+                    if (d3.format(",.2f")(value) == '-0.00')
+                        return "0%";
+                    if (value != 0)
+                        return comparando ? d3.format(",.2f")(value) + "%" : d3.format('s')(value);
+                    return value + "%";
+                }
+            }
+        }
+    },
+    type:'bar',
+    zoom: {
+        enabled: false
+    },
+    grid: {
+        x: {
+            show: true
+        }
+
+    },
+    tooltip: {
+        format: {
+            title: function (d) {
+                return d3.time.format("%a %d %b, %Y")(d)
+            },
+            value: function (value, ratio, id) {
+                return comparando ? value + "%" : d3.format(',')(value);
+            }
+        }
+    }
+});
+datos. onmouseover = function (d) {
+    chart2.tooltip.show({
+        mouse:[d3.event.pageX,50],
+        data:d
+    });
+}
 var chart = c3.generate({
+    bindto:'#chart',
     data: datos,
     axis: {
         x: {
@@ -46,8 +114,6 @@ var chart = c3.generate({
         y: {
             tick: {
                 format: function (value) {
-                    console.info(value);
-
                     if (d3.format(",.2f")(value) == '-0.00')
                         return "0%";
                     if (value != 0)
@@ -79,6 +145,8 @@ var chart = c3.generate({
         }
     }
 });
+
+
 
 //Oculta todas menos la principal
 //chart.hide('IPC', {withLegend: true});
