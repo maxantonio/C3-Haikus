@@ -32,7 +32,7 @@ function datos_aleatorios(cant) {
     }
 
     datos.columns = [fechas, maxcom, ipc, yahoo];
-    datos.volumen = [volume_maxcom]
+    datos.volumen = [volume_maxcom];
     // datos.hide = ["IPC"]; asi tambien la puedo ocultar pero no se oculto de la leyenda
 }
 
@@ -81,29 +81,14 @@ var chart = c3.generate({
     },
     interaction: {
         enabled: true
-    },
-    subchart: {
-        show: true
     }
 });
-
-/*
-var bar_chart = c3.generate({
-    bindto: "#chart_bar",
-    data: {
-        columns: datos.volumen,
-        type: 'bar'
-    },
-    size: {
-        height: 150
-    }
-});*/
 
 //Oculta todas menos la principal
 //chart.hide('IPC', {withLegend: true});
 //chart.hide('YAHOO', {withLegend: true});
 
 //Quita los datos correspondientes de esta grafica
-//chart.unload({
-//    ids: ['IPC', 'YAHOO']
-//});
+chart.unload({
+    ids: ['IPC', 'YAHOO']
+});
