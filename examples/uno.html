@@ -16,7 +16,7 @@
 
     <div id="chart-header"></div>
     <div id="chart"></div>
-    <div id="chart_bar"></div>
+    <div id="chart2"></div>
 </div>
 
 
@@ -25,7 +25,7 @@
     var formato = '%Y-%m-%d';
     var total_datos = 10;
 
-
+    //Periodos
     var periodos = [
         {
             texto: "1D",
@@ -80,9 +80,18 @@
         }
     ];
 
+    //Datos para la grafica de linea
     var datos = {
         x: 'x',
-        columns: []
+        columns: [],
+        type: 'line' // especifico que es de linea
+    };
+
+    //Datos para la grafica del volumen
+    var datos_volumen = {
+        x: 'x',
+        columns: [],
+        type: 'bar' // grafica una grafica de barra
     };
 </script>
 

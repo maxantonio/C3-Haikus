@@ -26,15 +26,73 @@ function datos_aleatorios(cant) {
         fecha.setDate(fecha.getDate() + 1);
         fechas.push(formatDate(fecha));
         maxcom.push(Math.floor((Math.random() * 850) + 345));
-        volume_maxcom.push(Math.floor((Math.random() * 1000) + 150));
+        volume_maxcom.push(Math.floor((Math.random() * 3000) + 1000));
         ipc.push(Math.floor((Math.random() * 650) + 140));
         yahoo.push(Math.floor((Math.random() * 780) + 354));
     }
 
     datos.columns = [fechas, maxcom, ipc, yahoo];
-    datos.volumen = [volume_maxcom];
-    // datos.hide = ["IPC"]; asi tambien la puedo ocultar pero no se oculto de la leyenda
+    datos_volumen.columns = [fechas, volume_maxcom];
 }
+
+/*
+ //Analizar esto porque se forma un ciclo infinito
+ datos_volumen.onmouseover = function (d) {
+ chart.tooltip.show({
+ mouse: [d3.event.pageX, 50],
+ data: d
+ });
+ };
+ */
+
+//Cuando se mueve el mouse por la grafica de linea
+datos.onmouseover = function (d) {
+    chart2.tooltip.show({
+        mouse: [d3.event.pageX, 50],
+        data: d
+    });
+};
+
+var chart2 = c3.generate({
+    bindto: '#chart2',
+    data: datos_volumen,
+    size: {
+        height: 100
+    },
+    axis: {
+        x: {
+            type: 'timeseries',
+            tick: {
+                format: formato
+            }, height: 20
+        },
+        y: {
+            tick: {
+                count: 4,
+                format: function (value) {
+                    var b = d3.format('f')(value);
+                    if (b == 0)
+                        return 0;
+                    return d3.format('s')(b);
+                }
+            }
+        }
+    },
+    grid: {
+        x: {show: true}
+    },
+    tooltip: {
+        format: {
+            title: function (d) {
+                return "Volumen"
+            },
+            value: function (value, ratio, id) {
+                return d3.format('s')(value);
+            }
+        }
+    }
+});
+
 
 var chart = c3.generate({
     data: datos,
@@ -83,10 +141,6 @@ var chart = c3.generate({
         enabled: true
     }
 });
-
-//Oculta todas menos la principal
-//chart.hide('IPC', {withLegend: true});
-//chart.hide('YAHOO', {withLegend: true});
 
 //Quita los datos correspondientes de esta grafica
 chart.unload({

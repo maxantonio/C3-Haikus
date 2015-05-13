@@ -338,6 +338,7 @@ var StockTools = function (raiz, periodos) {
         intervalos.append("span").text(i18n.t("from"));
         intervalos.append("input")
             .attr("type", "text")
+            .style("text-align", "center")
             .attr("name", "inicio")
             .attr("id", "inicio")
             .attr('value', datos.columns[0][1]);
@@ -346,6 +347,7 @@ var StockTools = function (raiz, periodos) {
         intervalos.append("span").text(i18n.t("to"));
         intervalos.append("input")
             .attr("type", "text")
+            .style("text-align", "center")
             .attr("name", "fin")
             .attr("id", "fin")
             .attr('value', datos.columns[0][datos.columns[0].length - 1]);
