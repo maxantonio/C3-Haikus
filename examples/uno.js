@@ -14,7 +14,6 @@ var p = new StockTools("#chart-header", periodos);
 //Genera datos aleatorios a partir de la fecha actual hacia atras
 function datos_aleatorios(cant) {
     var fechas = ["x"];
-    var fechas2 = ["x"];
     var maxcom = ["MAXCOM"];
     var volume_maxcom = ["MAXCOM"];
     var ipc = ["IPC"];
@@ -26,7 +25,6 @@ function datos_aleatorios(cant) {
     for (var i = 1; i <= cant; i++) {
         fecha.setDate(fecha.getDate() + 1);
         fechas.push(formatDate(fecha));
-        fechas2.push(formatDate(fecha));
         maxcom.push(Math.floor((Math.random() * 850) + 345));
         volume_maxcom.push(Math.floor((Math.random() * 3000) + 1000));
         ipc.push(Math.floor((Math.random() * 650) + 140));
@@ -34,29 +32,19 @@ function datos_aleatorios(cant) {
     }
 
     datos.columns = [fechas, maxcom, ipc, yahoo];
-    datos_volumen.columns = [fechas2, volume_maxcom];
+    datos_volumen.columns = [fechas, volume_maxcom];
 }
-
-
-//Analizar esto porque se forma un ciclo infinito
-datos_volumen.onmouseover = function (d) {
-    //chart.tooltip.show({
-    //    mouse: [d3.event.pageX, 50],
-    //    data: d
-    //});
-    console.info("Grafica del volumen");
-};
-
 
 //Cuando se mueve el mouse por la grafica de linea
 datos.onmouseover = function (d) {
-    chart2.tooltip.show({
-        mouse: [d3.event.pageX, 50],
-        data: d
-    });
-    console.info('Grafica de linea');
-};
+    showTooltip(1,d3.event,d)
+}
+//Cuando se mueve el mouse por la grafica de volumen
+datos_volumen.onmouseover = function (d) {
+    showTooltip(0,d3.event,d)
+}
 
+var charts  = new Array();//contenedor de graficos para usar en showTooltip
 var chart2 = c3.generate({
     bindto: '#chart2',
     data: datos_volumen,
@@ -96,7 +84,37 @@ var chart2 = c3.generate({
         }
     }
 });
+//sobreescribiendo el metodo tooltip.show para evitar la propagacion del mouseover
+chart2.tooltip.show = function(args){
+    var ds = chart2.internal, index, mouse;
 
+    // determine mouse position on the chart
+    if (args.mouse) {
+        mouse = args.mouse;
+    }
+
+    // determine focus data
+    if (args.data) {
+        if (ds.isMultipleX()) {
+            // if multiple xs, target point will be determined by mouse
+            mouse = [ds.x(args.data.x), ds.getYScale(args.data.id)(args.data.value)];
+            index = null;
+        } else {
+            // TODO: when tooltip_grouped = false
+            index = ds.isValue(args.data.index) ? args.data.index : ds.getIndexByX(args.data.x);
+        }
+    }
+    else if (typeof args.x !== 'undefined') {
+        index = this.getIndexByX(args.x);
+    }
+    else if (typeof args.index !== 'undefined') {
+        index = args.index;
+    }
+
+    // emulate mouse events to show
+    //  $$.dispatchEvent('mouseover', index, mouse);
+    ds.dispatchEvent('mousemove', index, mouse);
+}
 
 var chart = c3.generate({
     data: datos,
@@ -145,8 +163,18 @@ var chart = c3.generate({
         enabled: true
     }
 });
-
+charts.push(chart);
+charts.push(chart2);
 //Quita los datos correspondientes de esta grafica
 chart.unload({
     ids: ['IPC', 'YAHOO']
 });
+
+//para  mostrar tooltip
+function showTooltip(indexChart,event,d){
+    console.log(charts[indexChart])
+    charts[indexChart].tooltip.show({
+        mouse:[event.pageX,50],
+        data:d
+    });
+}

@@ -1,0 +1,107 @@
+<!DOCTYPE  HTML>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="vendor/c3.css">
+		<style>
+			/*path {
+			 fill: #ccc;
+
+			 transition: fill 250ms linear;
+			 transition-delay: 150ms;
+			 }*/
+            .title{
+                color:rgb(120,120,121);
+                font-family: verdana;     /*buscar tipo de letra usado*/
+                font-weight: bold;
+                font-size: 16px;         /*buscar tamaño de letra usado*/
+            }
+            .subtitle{
+                color:rgb(36,82,138);
+                font-family: verdana;     /*buscar tipo de letra usado*/
+                font-weight: bolder;
+                font-size: 16px;         /*buscar tamaño de letra usado*/
+            }
+			.arc00 {
+				fill: rgb(120,120,121);
+				stroke: rgb(120,120,121);
+				stroke-width: 1.5px;
+			}
+			.arc01 {
+				fill: rgb(36,82,138);
+				stroke: rgb(36,82,138);
+				stroke-width: 1.5px;
+			}
+			.arc02 {
+				fill: rgb(175,176,176);
+				stroke: rgb(175,176,176);
+				stroke-width: 1.5px;
+			}
+			.arcN {
+				fill: transparent;
+				stroke-width: 0;
+			}
+			.textValue{
+				font-family: Verdana;
+				font-weight:bold;
+				fill:rgb(72,72,72);
+			}
+            .tooltip {
+                background: #eee;
+                box-shadow: 0 0 5px #999999;
+                color: #333;
+                display: none;
+                font-size: 12px;
+                left: 130px;
+                padding: 10px;
+                position: absolute;
+                text-align: center;
+                top: 95px;
+                width: 80px;
+                z-index: 10;
+            }
+
+		</style>
+		<!-- Latest compiled and minified CSS -->
+		<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">-->
+
+		<!-- Optional theme -->
+		<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">-->
+
+		<!-- Latest compiled and minified JavaScript -->
+		<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>-->
+	</head>
+	<body>
+    <!--    -->
+		<div class="text-center col-md-12">
+            <!-- Div contenedor del grafico   -->
+			<div id="chart"></div>
+		</div>
+
+		<script src="vendor/d3.v3.min.js" charset="utf-8"></script>
+		<script src="vendor/c3.js"></script>
+		<script src="../src/d3.layout.customPie.js"></script>
+		<script src="../src/IRStrat.Donuts.js"></script>
+		<script>
+            //Datos del grafico a mostrar
+            var config = {
+            title:"1T15",                   //Titulo del grafico (Opcional por defecto vacio)
+            subtitle:"CONSOLIDADO",         //SubTitulo del grafico (Opcional por defecto vacio)
+            width:300,                      //Ancho del grafico (Opcional por defecto 400)
+            height:300,                     //Alto del grafico (Opcional por defecto 400)
+            values:[{                       //Arreglo de elementos a graficar
+                        key : "Autopartes",
+                        value : 50
+                    }, {
+                        key : "Construccion",
+                        value : 62
+                    }, {
+                        key : "Hogar",
+                        value : 80
+                    }]
+            };
+            //Creando el grafico con selector y los datos dados
+            var grafica = new IDonuts("#chart",config);
+		</script>
+
+	</body>
+</html>
