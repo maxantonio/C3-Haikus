@@ -47,7 +47,7 @@ IDonuts = function(source,config ) {
         var innerRadiuss = [innerRadius,innerRadius-25,innerRadius-50] ;
 
         var svg = header.append("div").append("svg").attr("width", width).attr("height", height)
-            .append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+            .append("g").attr("transform", "translate(" + width / 2 + "," + ((height / 2)-13) + ")");
 
         var arcs = new Array();
         var pie = d3.layout.customPie();
@@ -75,7 +75,7 @@ for (var i=0; i < valores.length; i++){
 
     g.append("path")
         .each(function(d) {
-            d.outerRadius = outerRadiuss[i] - 20;
+            d.outerRadius = outerRadiuss[i] - 23;
         })
         .attr("d", arcs[i])
         .attr("class",function(d,j){
@@ -92,7 +92,7 @@ for (var i=0; i < valores.length; i++){
         });
 
     g.append("text")
-        .attr("transform", function(d) { return "translate(-25,"+(-(outerRadius-30)+i*25)+")"; })
+        .attr("transform", function(d) { return "translate(-30,"+(-(outerRadius-30)+i*25)+")"; })
         .attr("dy", ".35em")
         .style("text-anchor", "middle")
         .style("foreground","red")
