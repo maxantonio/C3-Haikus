@@ -14,6 +14,7 @@ var p = new StockTools("#chart-header", periodos);
 //Genera datos aleatorios a partir de la fecha actual hacia atras
 function datos_aleatorios(cant) {
     var fechas = ["x"];
+    var fechas2 = ["x"];
     var maxcom = ["MAXCOM"];
     var volume_maxcom = ["MAXCOM"];
     var ipc = ["IPC"];
@@ -25,6 +26,7 @@ function datos_aleatorios(cant) {
     for (var i = 1; i <= cant; i++) {
         fecha.setDate(fecha.getDate() + 1);
         fechas.push(formatDate(fecha));
+        fechas2.push(formatDate(fecha));
         maxcom.push(Math.floor((Math.random() * 850) + 345));
         volume_maxcom.push(Math.floor((Math.random() * 3000) + 1000));
         ipc.push(Math.floor((Math.random() * 650) + 140));
@@ -32,18 +34,19 @@ function datos_aleatorios(cant) {
     }
 
     datos.columns = [fechas, maxcom, ipc, yahoo];
-    datos_volumen.columns = [fechas, volume_maxcom];
+    datos_volumen.columns = [fechas2, volume_maxcom];
 }
 
-/*
- //Analizar esto porque se forma un ciclo infinito
- datos_volumen.onmouseover = function (d) {
- chart.tooltip.show({
- mouse: [d3.event.pageX, 50],
- data: d
- });
- };
- */
+
+//Analizar esto porque se forma un ciclo infinito
+datos_volumen.onmouseover = function (d) {
+    //chart.tooltip.show({
+    //    mouse: [d3.event.pageX, 50],
+    //    data: d
+    //});
+    console.info("Grafica del volumen");
+};
+
 
 //Cuando se mueve el mouse por la grafica de linea
 datos.onmouseover = function (d) {
@@ -51,6 +54,7 @@ datos.onmouseover = function (d) {
         mouse: [d3.event.pageX, 50],
         data: d
     });
+    console.info('Grafica de linea');
 };
 
 var chart2 = c3.generate({
