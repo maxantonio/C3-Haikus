@@ -15,9 +15,9 @@ var p = new StockTools("#chart-header", periodos);
 function datos_aleatorios(cant) {
     var fechas = ["x"];
     var maxcom = ["MAXCOM"];
+    var volume_maxcom = ["MAXCOM"];
     var ipc = ["IPC"];
     var yahoo = ["YAHOO"];
-
 
     var fecha = new Date();
     fecha.setDate(fecha.getDate() - cant);
@@ -26,32 +26,28 @@ function datos_aleatorios(cant) {
         fecha.setDate(fecha.getDate() + 1);
         fechas.push(formatDate(fecha));
         maxcom.push(Math.floor((Math.random() * 850) + 345));
+        volume_maxcom.push(Math.floor((Math.random() * 3000) + 1000));
         ipc.push(Math.floor((Math.random() * 650) + 140));
         yahoo.push(Math.floor((Math.random() * 780) + 354));
-
     }
 
     datos.columns = [fechas, maxcom, ipc, yahoo];
-    console.log(datos);
-    // datos.hide = ["IPC"]; asi tambien la puedo ocultar pero no se oculto de la leyenda
+    datos_volumen.columns = [fechas, volume_maxcom];
 }
 
+//Cuando se mueve el mouse por la grafica de linea
+datos.onmouseover = function (d) {
+    showTooltip(1,d3.event,d)
+}
+//Cuando se mueve el mouse por la grafica de volumen
+datos_volumen.onmouseover = function (d) {
+    showTooltip(0,d3.event,d)
+}
 
-var datosVenta = {
-    x: 'x',
-    columns: [
-        datos.columns[0],
-        datos.columns[1]
-    ],
-    type:'bar'
-
-};
-
-
-
+var charts  = new Array();//contenedor de graficos para usar en showTooltip
 var chart2 = c3.generate({
-    bindto:'#chart2',
-    data: datosVenta ,
+    bindto: '#chart2',
+    data: datos_volumen,
     size: {
         height: 100
     },
@@ -60,49 +56,67 @@ var chart2 = c3.generate({
             type: 'timeseries',
             tick: {
                 format: formato
-            },height: 20
+            }, height: 20
         },
         y: {
             tick: {
+                count: 4,
                 format: function (value) {
-                    if (d3.format(",.2f")(value) == '-0.00')
-                        return "0%";
-                    if (value != 0)
-                        return comparando ? d3.format(",.2f")(value) + "%" : d3.format('s')(value);
-                    return value + "%";
+                    var b = d3.format('f')(value);
+                    if (b == 0)
+                        return 0;
+                    return d3.format('s')(b);
                 }
             }
         }
     },
-    type:'bar',
-    zoom: {
-        enabled: false
-    },
     grid: {
-        x: {
-            show: true
-        }
-
+        x: {show: true}
     },
     tooltip: {
         format: {
             title: function (d) {
-                return d3.time.format("%a %d %b, %Y")(d)
+                return "Volumen"
             },
             value: function (value, ratio, id) {
-                return comparando ? value + "%" : d3.format(',')(value);
+                return d3.format('s')(value);
             }
         }
     }
 });
-datos. onmouseover = function (d) {
-    chart2.tooltip.show({
-        mouse:[d3.event.pageX,50],
-        data:d
-    });
+//sobreescribiendo el metodo tooltip.show para evitar la propagacion del mouseover
+chart2.tooltip.show = function(args){
+    var ds = chart2.internal, index, mouse;
+
+    // determine mouse position on the chart
+    if (args.mouse) {
+        mouse = args.mouse;
+    }
+
+    // determine focus data
+    if (args.data) {
+        if (ds.isMultipleX()) {
+            // if multiple xs, target point will be determined by mouse
+            mouse = [ds.x(args.data.x), ds.getYScale(args.data.id)(args.data.value)];
+            index = null;
+        } else {
+            // TODO: when tooltip_grouped = false
+            index = ds.isValue(args.data.index) ? args.data.index : ds.getIndexByX(args.data.x);
+        }
+    }
+    else if (typeof args.x !== 'undefined') {
+        index = this.getIndexByX(args.x);
+    }
+    else if (typeof args.index !== 'undefined') {
+        index = args.index;
+    }
+
+    // emulate mouse events to show
+    //  $$.dispatchEvent('mouseover', index, mouse);
+    ds.dispatchEvent('mousemove', index, mouse);
 }
+
 var chart = c3.generate({
-    bindto:'#chart',
     data: datos,
     axis: {
         x: {
@@ -114,6 +128,7 @@ var chart = c3.generate({
         y: {
             tick: {
                 format: function (value) {
+                    //console.info(value);
                     if (d3.format(",.2f")(value) == '-0.00')
                         return "0%";
                     if (value != 0)
@@ -143,16 +158,23 @@ var chart = c3.generate({
                 return comparando ? value + "%" : d3.format(',')(value);
             }
         }
+    },
+    interaction: {
+        enabled: true
     }
 });
-
-
-
-//Oculta todas menos la principal
-//chart.hide('IPC', {withLegend: true});
-//chart.hide('YAHOO', {withLegend: true});
-
+charts.push(chart);
+charts.push(chart2);
 //Quita los datos correspondientes de esta grafica
 chart.unload({
     ids: ['IPC', 'YAHOO']
 });
+
+//para  mostrar tooltip
+function showTooltip(indexChart,event,d){
+    console.log(charts[indexChart])
+    charts[indexChart].tooltip.show({
+        mouse:[event.pageX,50],
+        data:d
+    });
+}
