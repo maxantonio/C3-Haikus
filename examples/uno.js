@@ -33,30 +33,31 @@ function datos_aleatorios(cant) {
 
     datos.columns = [fechas, maxcom, ipc, yahoo];
     datos_volumen.columns = [fechas, volume_maxcom];
+    datos_area.columns = [fechas, maxcom];
 }
 
 //Cuando se mueve el mouse por la grafica de linea
 datos.onmouseover = function (d) {
-    showTooltip(1,d3.event,d)
+    showTooltip(1, d3.event, d)
 }
 //Cuando se mueve el mouse por la grafica de volumen
 datos_volumen.onmouseover = function (d) {
-    showTooltip(0,d3.event,d)
+    showTooltip(0, d3.event, d)
 }
 
-var charts  = new Array();//contenedor de graficos para usar en showTooltip
+var charts = new Array();//contenedor de graficos para usar en showTooltip
 var chart2 = c3.generate({
     bindto: '#chart2',
     data: datos_volumen,
     size: {
-        height: 100
+        height: 300
     },
     axis: {
         x: {
             type: 'timeseries',
             tick: {
                 format: formato
-            }, height: 20
+            }
         },
         y: {
             tick: {
@@ -73,6 +74,9 @@ var chart2 = c3.generate({
     grid: {
         x: {show: true}
     },
+    legend: {
+        show: false
+    },
     tooltip: {
         format: {
             title: function (d) {
@@ -82,10 +86,52 @@ var chart2 = c3.generate({
                 return d3.format('s')(value);
             }
         }
+    },
+    subchart: {
+        show:true
     }
 });
+var chart3 = c3.generate({
+    bindto: "#chart3",
+    size: {
+        height: 100
+    },
+    data: datos_area,
+    axis: {
+        x: {
+            type: 'timeseries',
+            tick: {
+                format: formato
+            }
+        },
+        y: {
+            tick: {
+                count: 4,
+                format: function (value) {
+                    var b = d3.format('f')(value);
+                    if (b == 0)
+                        return 0;
+                    return d3.format('s')(b);
+                }
+            }
+        }
+    },
+    point: {
+        show: false
+    },
+    legend: {
+        show: false
+    },
+    tooltip: {
+        show: false
+    },
+    interaction: {
+        enabled: false
+    }
+});
+
 //sobreescribiendo el metodo tooltip.show para evitar la propagacion del mouseover
-chart2.tooltip.show = function(args){
+chart2.tooltip.show = function (args) {
     var ds = chart2.internal, index, mouse;
 
     // determine mouse position on the chart
@@ -158,9 +204,6 @@ var chart = c3.generate({
                 return comparando ? value + "%" : d3.format(',')(value);
             }
         }
-    },
-    interaction: {
-        enabled: true
     }
 });
 charts.push(chart);
@@ -170,11 +213,13 @@ chart.unload({
     ids: ['IPC', 'YAHOO']
 });
 
+
 //para  mostrar tooltip
-function showTooltip(indexChart,event,d){
-    console.log(charts[indexChart])
+function showTooltip(indexChart, event, d) {
+    //console.log(charts[indexChart])
     charts[indexChart].tooltip.show({
-        mouse:[event.pageX,50],
-        data:d
+        mouse: [event.pageX, 50],
+        data: d
     });
 }
+

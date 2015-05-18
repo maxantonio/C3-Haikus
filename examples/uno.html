@@ -1,6 +1,8 @@
-<html>
+<html lang="es">
 <head>
     <link rel="stylesheet" type="text/css" href="vendor/c3.css">
+    <meta charset="utf-8">
+
     <!-- Latest compiled and minified CSS -->
     <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">-->
 
@@ -17,8 +19,8 @@
     <div id="chart-header"></div>
     <div id="chart"></div>
     <div id="chart2"></div>
+    <!--<div id="chart3"></div>-->
 </div>
-
 
 <script>
     var locale = "es";
@@ -86,11 +88,19 @@
         columns: [],
         type: 'line' // especifico que es de linea
     };
+
     //Datos para la grafica del volumen
     var datos_volumen = {
         x: 'x',
         columns: [],
         type: 'bar' // grafica una grafica de barra
+    };
+
+    //Datos para la grafica de area
+    var datos_area = {
+        x: 'x',
+        columns: [],
+        type: 'area' // especifica que es de area
     };
 </script>
 
