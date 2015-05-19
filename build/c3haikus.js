@@ -463,10 +463,7 @@ var StockTools = function (raiz, periodos) {
             m_updateGrafica(fechaInicio, fechaFin);
         }
 
-        function m_updateGrafica(fechaInicio, fechafin) {
-            chart.axis.min({x: formatDate(fechaInicio)});
-            chart.axis.max({x: formatDate(fechafin)});
-        }
+
 
         //Dev true si las fechas estan en el intervalo de los datos
         //si no se especifica la fechaFin se entiende que es hasta la ultima fecha de los datos
@@ -568,6 +565,18 @@ var StockTools = function (raiz, periodos) {
                 throw new Error("Intervalo incorrecto");
 
         }
+
     }
+
+
+
+};
+
+var m_updateGrafica =  function (fechaInicio, fechafin) {
+
+        charts[0].axis.min({x: formatDate(fechaInicio)});
+        charts[0].axis.max({x: formatDate(fechafin)});
+        charts[1].axis.min({x: formatDate(fechaInicio)});
+        charts[1].axis.max({x: formatDate(fechafin)});
 
 };
