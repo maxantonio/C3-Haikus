@@ -176,7 +176,6 @@
 
     c3_chart_internal_fn.initWithData = function (data) {
 
-        console.info('initWithData',data);
         var $$ = this, d3 = $$.d3, config = $$.config;
         var defs, main, binding = true;
 

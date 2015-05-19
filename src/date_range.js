@@ -160,11 +160,9 @@ var StockTools = function (raiz, periodos) {
         }
 
         function m_updateGrafica(fechaInicio, fechafin) {
-            chart.axis.min({x: formatDate(fechaInicio)});
-            chart.axis.max({x: formatDate(fechafin)});
-
-            chart2.axis.min({x: formatDate(fechaInicio)});
-            chart2.axis.max({x: formatDate(fechafin)});
+            var dominio = [fechaInicio, fechafin];
+            chart.zoom(dominio);
+            chart2.zoom(dominio);
         }
 
         //Dev true si las fechas estan en el intervalo de los datos
