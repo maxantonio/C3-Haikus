@@ -50,7 +50,7 @@ var chart2 = c3.generate({
     bindto: '#chart2',
     data: datos_volumen,
     size: {
-        height: 300
+        height: 100
     },
     axis: {
         x: {
@@ -88,13 +88,14 @@ var chart2 = c3.generate({
         }
     },
     subchart: {
-        show:true
+        show:false
     }
+
 });
 var chart3 = c3.generate({
     bindto: "#chart3",
     size: {
-        height: 100
+        height: 200
     },
     data: datos_area,
     axis: {
@@ -106,7 +107,7 @@ var chart3 = c3.generate({
         },
         y: {
             tick: {
-                count: 4,
+                count: 1,
                 format: function (value) {
                     var b = d3.format('f')(value);
                     if (b == 0)
@@ -117,7 +118,7 @@ var chart3 = c3.generate({
         }
     },
     point: {
-        show: false
+        show: true
     },
     legend: {
         show: false
@@ -127,7 +128,17 @@ var chart3 = c3.generate({
     },
     interaction: {
         enabled: false
+    },
+    subchart: {
+        show:true,
+        onbrush: function (d) {
+            console.info(d);
+            chart.zoom(d);
+            chart2.zoom(d);
+
+        }
     }
+
 });
 
 //sobreescribiendo el metodo tooltip.show para evitar la propagacion del mouseover
@@ -184,9 +195,9 @@ var chart = c3.generate({
             }
         }
     },
-    zoom: {
-        enabled: false
-    },
+    /* zoom: {
+     enabled: false
+     },*/
     grid: {
         x: {
             show: true
@@ -213,6 +224,14 @@ chart.unload({
     ids: ['IPC', 'YAHOO']
 });
 
+var shchart3 = d3.selectAll('#chart3');
+var svg3 =shchart3.select('svg');
+
+//desapareciendo la grafica para trabajar solo con el subchart
+var gs = svg3.select('g');
+var gsubchart = svg3.select('.subchart_haikus');
+gs.style('display','none');
+gsubchart.attr("transform", 'translate(50.5,0.5)');
 
 //para  mostrar tooltip
 function showTooltip(indexChart, event, d) {
@@ -222,4 +241,3 @@ function showTooltip(indexChart, event, d) {
         data: d
     });
 }
-
