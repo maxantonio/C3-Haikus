@@ -132,9 +132,8 @@ var chart3 = c3.generate({
     subchart: {
         show:true,
         onbrush: function (d) {
-            chart.zoom(d);
-            chart2.zoom(d);
-
+            console.log(d);
+            m_updateGrafica(d[0],d[1]);
         }
     }
 
@@ -194,9 +193,9 @@ var chart = c3.generate({
             }
         }
     },
-   /* zoom: {
-        enabled: false
-    },*/
+    /* zoom: {
+     enabled: false
+     },*/
     grid: {
         x: {
             show: true
@@ -218,6 +217,7 @@ var chart = c3.generate({
 });
 charts.push(chart);
 charts.push(chart2);
+charts.push(chart3);
 //Quita los datos correspondientes de esta grafica
 chart.unload({
     ids: ['IPC', 'YAHOO']
@@ -232,6 +232,8 @@ var gsubchart = svg3.select('.subchart_haikus');
 gs.style('display','none');
 gsubchart.attr("transform", 'translate(50.5,0.5)');
 
+//chart3.internal.redraw({},["2015-02-09","2015-03-09"])
+
 //para  mostrar tooltip
 function showTooltip(indexChart, event, d) {
     //console.log(charts[indexChart])
@@ -240,4 +242,3 @@ function showTooltip(indexChart, event, d) {
         data: d
     });
 }
-

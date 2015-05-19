@@ -4,8 +4,8 @@
 IDonuts = function(source,config ) {
     'use strict';
     var valores = config.values;
-    //colores por defecto de los arcos
-    var colores = ['#787879','#24528A','#AFB0B0'];
+    //colors por defecto de los arcos
+    var colors = ['#787879','#24528A','#AFB0B0'];
 
     //Crea los componentes
     init();
@@ -23,9 +23,9 @@ IDonuts = function(source,config ) {
             height = config.height;
         }
 
-        //seteo colores si se pasa por configuracion
+        //seteo colors si se pasa por configuracion
         if(config.colors){
-            colores = config.colors;
+            colors = config.colors;
         }
 
         var chart = d3.select(source).append("div").attr("class", "d3-chart");
@@ -47,9 +47,10 @@ IDonuts = function(source,config ) {
 
 //
         var outerRadius = height/2 , innerRadius = outerRadius -40;
-        var outerRadiuss = [outerRadius,outerRadius-25,outerRadius-50] ;
-        var innerRadiuss = [innerRadius,innerRadius-25,innerRadius-50] ;
+        var outerRadiuss = [outerRadius,outerRadius-25,outerRadius-50] ;/// TODO hacer dinamico la cantidad de radius
+        var innerRadiuss = [innerRadius,innerRadius-25,innerRadius-50] ;/// TODO hacer dinamico la cantidad de radius
 
+        //ubicando svg para pintar arcos
         var svg = chart.append("div").append("svg").attr("width", width).attr("height", height)
             .append("g").attr("transform", "translate(" + width / 2 + "," + ((height / 2)-13) + ")");
 
@@ -67,20 +68,18 @@ IDonuts = function(source,config ) {
         tooltip.append('div')
             .attr('class', 'count');
         for (var i=0; i < valores.length; i++){
-
             arcs.push(d3.svg.arc().padRadius(outerRadiuss[i]).innerRadius(innerRadiuss[i]));
-
-    var g = svg.selectAll()
-        .data(pie(valores[i]))
-        .enter().append("g")
-        .attr("class", "arc");
+            var g = svg.selectAll()
+          .data(pie(valores[i]))
+           .enter().append("g")
+            .attr("class", "arc");
 
     g.append("path")
         .each(function(d) {
             d.outerRadius = outerRadiuss[i] - 23;
         })
         .attr("d", arcs[i])
-        .attr("fill",colores[i])
+        .attr("fill",colors[i])
         //.attr("class",function(){
         //    return "arc0"+i;
         //})
@@ -107,11 +106,12 @@ IDonuts = function(source,config ) {
         .attr("class","textValue")
         .text(valores[i].value+"%");
 }
+        //option save
         if(config.save){
             if(!config.save.text){
                 config.save.text = 'SAVE AS PNG';
             }
-            console.log(  config.save.text);
+
             chart.append('input').attr('type','button').attr('id','save').attr('value',config.save.text);
             d3.select("#save").on("click", function(){
                 var html = d3.select("svg")
@@ -120,13 +120,11 @@ IDonuts = function(source,config ) {
                     .node().parentNode.innerHTML;
                 //console.log(html);
                 var imgsrc = 'data:image/svg+xml;base64,'+ btoa(html);
-                var img = '<img src="'+imgsrc+'" >';
 
-                d3.select("#svgdataurl").style('display','none').html(img);
                 chart.append('canvas').attr("width", width).attr("height", height).style('display','none');
                 var canvas = document.querySelector("canvas"),
                     context = canvas.getContext("2d");
-                console.log(canvas);
+
                 var image = new Image();
                 image.src = imgsrc;
                 image.onload = function() {
@@ -138,7 +136,8 @@ IDonuts = function(source,config ) {
                     a.download = "sample.png";
                     a.href = canvasdata;
                     a.click();
-                    console.log("salvando");
+                    window.location = canvas.toDataURL("image/png");
+
                 };
             });
         }

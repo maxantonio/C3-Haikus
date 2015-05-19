@@ -1,12 +1,9 @@
 d3.layout.customPie = function() {
     var value = Number, startAngle = 0, endAngle = 2 * Math.PI;
     function pie(data) {
-    	console.log(data);
-     
+        var a = +(typeof startAngle === "function" ? startAngle.apply(this, arguments) : startAngle);
+        var k = ((typeof endAngle === "function" ? endAngle.apply(this, arguments) : endAngle) - a) / 100;
 
-      var a = +(typeof startAngle === "function" ? startAngle.apply(this, arguments) : startAngle);
-      var k = ((typeof endAngle === "function" ? endAngle.apply(this, arguments) : endAngle) - a) / 100;
-   
       var arcs = [];
        arcs[0] = {
           data: data.value,
@@ -15,7 +12,6 @@ d3.layout.customPie = function() {
           startAngle: a,
           endAngle: a += d * k
         };
-      console.log(arcs)
       return arcs;
     }
     pie.value = function(x) {

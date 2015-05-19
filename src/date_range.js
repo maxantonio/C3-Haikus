@@ -142,8 +142,7 @@ var StockTools = function (raiz, periodos) {
 
             if (m_intervalo_Correcto(fechaInicio, fechaFin)) {
                 m_updateGrafica(fechaInicio, fechaFin);
-                document.getElementById("inicio").value = formatDate(fechaInicio);
-                document.getElementById("fin").value = formatDate(fechaFin);
+
             }
             else
                 throw new Error("No hay datos para este intervalo");
@@ -159,10 +158,7 @@ var StockTools = function (raiz, periodos) {
                 throw new Error("Intervalo incorrecto.");
         }
 
-        function m_updateGrafica(fechaInicio, fechafin) {
-            chart.axis.min({x: formatDate(fechaInicio)});
-            chart.axis.max({x: formatDate(fechafin)});
-        }
+
 
         //Dev true si las fechas estan en el intervalo de los datos
         //si no se especifica la fechaFin se entiende que es hasta la ultima fecha de los datos
@@ -267,3 +263,12 @@ var StockTools = function (raiz, periodos) {
     }
 
 };
+
+function m_updateGrafica(fechaInicio, fechafin) {
+    var dominio = [fechaInicio, fechafin];
+    chart.zoom(dominio);
+    chart2.zoom(dominio);
+    chart3.brush.extend(dominio);
+    document.getElementById("inicio").value = formatDate(fechaInicio);
+    document.getElementById("fin").value = formatDate(fechaFin);
+}
