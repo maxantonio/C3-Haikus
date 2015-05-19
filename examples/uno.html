@@ -1,6 +1,8 @@
-<html>
+<html lang="es">
 <head>
     <link rel="stylesheet" type="text/css" href="vendor/c3.css">
+    <meta charset="utf-8">
+
     <!-- Latest compiled and minified CSS -->
     <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">-->
 
@@ -17,15 +19,15 @@
     <div id="chart-header"></div>
     <div id="chart"></div>
     <div id="chart2"></div>
+    <div id="chart3"></div>
 </div>
-
 
 <script>
     var locale = "es";
     var formato = '%Y-%m-%d';
     var total_datos = 100;
 
-
+    //Periodos
     var periodos = [
         {
             texto: "1D",
@@ -42,37 +44,44 @@
             cantidad: 4,
             tipo: "dia",
             seleccionado: false
-        }, {
+        },
+        {
             texto: "1M",
             cantidad: 1,
             tipo: "mes",
             seleccionado: false
-        }, {
+        },
+        {
             texto: "2M",
             cantidad: 2,
             tipo: "mes",
             seleccionado: false
-        }, {
+        },
+        {
             texto: "YTD",
             cantidad: 0,
             tipo: "hasta_la_fecha",
             seleccionado: false
-        }, {
+        },
+        {
             texto: "1Y",
             cantidad: 1,
             tipo: "anno",
             seleccionado: false
-        }, {
+        },
+        {
             texto: "2Y",
             cantidad: 2,
             tipo: "anno",
             seleccionado: false
-        }, {
+        },
+        {
             texto: "5Y",
             cantidad: 5,
             tipo: "anno",
             seleccionado: false
-        }, {
+        },
+        {
             texto: "10Y",
             cantidad: 10,
             tipo: "anno",
@@ -80,22 +89,32 @@
         }
     ];
 
+    //Datos para la grafica de linea
     var datos = {
         x: 'x',
-        columns: []
+        columns: [],
+        type: 'line' // especifico que es de linea
     };
+
     //Datos para la grafica del volumen
     var datos_volumen = {
         x: 'x',
         columns: [],
         type: 'bar' // grafica una grafica de barra
     };
+
+    //Datos para la grafica de area
+    var datos_area = {
+        x: 'x',
+        columns: [],
+        type: 'area' // especifica que es de area
+    };
 </script>
 
 <script src="vendor/d3.v3.min.js" charset="utf-8"></script>
 <script src="vendor/c3.js"></script>
-<!--<script src="../build/c3haikus.js"></script>-->
-<script src="../build/c3haikus.min.js"></script>
+<script src="../build/c3haikus.js"></script>
+<!--<script src="../build/c3haikus.min.js"></script>-->
 <script src="uno.js"></script>
 </body>
 </html>
