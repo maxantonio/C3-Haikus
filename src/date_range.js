@@ -265,10 +265,12 @@ var StockTools = function (raiz, periodos) {
 };
 
 function m_updateGrafica(fechaInicio, fechafin) {
+    console.log("fecha fin"+fechafin);
     var dominio = [fechaInicio, fechafin];
     chart.zoom(dominio);
     chart2.zoom(dominio);
-    chart3.brush.extend(dominio);
-    document.getElementById("inicio").value = formatDate(fechaInicio);
-    document.getElementById("fin").value = formatDate(fechaFin);
+    //actualiza el brush si existe
+    chart3.internal.brush.extent(dominio).update();
+    d3.select("#inicio").attr('value',formatDate(fechaInicio));
+    d3.select("#fin").attr('value',formatDate(fechafin));
 }
