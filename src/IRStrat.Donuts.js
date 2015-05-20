@@ -4,12 +4,12 @@
 IDonuts = function(source,config ) {
     'use strict';
     var valores = config.values;
-    //actual simbolo que se esta comparando
-    var current_selected_value = "";
-    var ids = [];
+    //colors por defecto de los arcos
+    var colors = ['#787879','#24528A','#AFB0B0'];
 
     //Crea los componentes
     init();
+
 
     function init() {
         var width = 400, height = 400;
@@ -17,39 +17,44 @@ IDonuts = function(source,config ) {
         if(config.width){
             width = config.width;
         }
+
         //seteo alto grafico si se pasa por configuracion
         if(config.height){
             height = config.height;
         }
 
-        var header = d3.select(source).append("div").attr("class", "d3-chart");
+        //seteo colors si se pasa por configuracion
+        if(config.colors){
+            colors = config.colors;
+        }
+
+        var chart = d3.select(source).append("div").attr("class", "d3-chart");
         //agrego titulo del grafico si se pasa por configuracion
         if(config.title)
-            header.append("div")
+            chart.append("div")
                 .attr("class","title")
                 .append("text")
                 .text(config.title)
-                .style("margin-left",function(d){
+                .style("margin-left",function(){
                      return ((width / 2)-(config.title.length*5))+"px"
                  }).style("color","rgb(120,120,121);");
-
-            ;
-
+        //agrego titulo del grafico si se pasa por configuracion
         if(config.subtitle)
-            header.append("div").attr("class","subtitle").append("text").text(config.subtitle).style("margin-left", function(d){
+            chart.append("div").attr("class","subtitle").append("text").text(config.subtitle).style("margin-left", function(){
                return ((width / 2)-(config.subtitle.length*5))+"px";
             });
         //seteo valor por defecto tamaño grafico
 
 //
-        var outerRadius = height/2 , innerRadius = outerRadius -40, cornerRadius = 100;
-        var outerRadiuss = [outerRadius,outerRadius-25,outerRadius-50] ;
-        var innerRadiuss = [innerRadius,innerRadius-25,innerRadius-50] ;
+        var outerRadius = height/2 , innerRadius = outerRadius -40;
+        var outerRadiuss = [outerRadius,outerRadius-25,outerRadius-50] ;/// TODO hacer dinamico la cantidad de radius
+        var innerRadiuss = [innerRadius,innerRadius-25,innerRadius-50] ;/// TODO hacer dinamico la cantidad de radius
 
-        var svg = header.append("div").append("svg").attr("width", width).attr("height", height)
-            .append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+        //ubicando svg para pintar arcos
+        var svg = chart.append("div").append("svg").attr("width", width).attr("height", height)
+            .append("g").attr("transform", "translate(" + width / 2 + "," + ((height / 2)-13) + ")");
 
-        var arcs = new Array();
+        var arcs = [];
         var pie = d3.layout.customPie();
 
     //      agrego div para tooltip
@@ -62,29 +67,27 @@ IDonuts = function(source,config ) {
     //agrego div que muestra cantidad
         tooltip.append('div')
             .attr('class', 'count');
-
-
-
-for (var i=0; i < valores.length; i++){
-    arcs.push(d3.svg.arc().padRadius(outerRadiuss[i]).innerRadius(innerRadiuss[i]));
-
-    var g = svg.selectAll()
-        .data(pie(valores[i]))
-        .enter().append("g")
-        .attr("class", "arc");
+        for (var i=0; i < valores.length; i++){
+            arcs.push(d3.svg.arc().padRadius(outerRadiuss[i]).innerRadius(innerRadiuss[i]));
+            var g = svg.selectAll()
+          .data(pie(valores[i]))
+           .enter().append("g")
+            .attr("class", "arc");
 
     g.append("path")
         .each(function(d) {
-            d.outerRadius = outerRadiuss[i] - 20;
+            d.outerRadius = outerRadiuss[i] - 23;
         })
         .attr("d", arcs[i])
-        .attr("class",function(d,j){
-            return "arc0"+i;
-        }).on('mouseover', function(d){
+        .attr("fill",colors[i])
+        //.attr("class",function(){
+        //    return "arc0"+i;
+        //})
+        .on('mouseover', function(d){
             tooltip.select('.label').html(d.key);
             tooltip.select('.count').html(d.value+ '%');
             tooltip.style('display', 'block');
-        }).on('mousemove', function(d) {
+        }).on('mousemove', function() {
         tooltip.style('top', (d3.event.pageY + 10) + 'px')
             .style('left', (d3.event.pageX + 10) + 'px');
     }).on('mouseout', function() {
@@ -92,11 +95,56 @@ for (var i=0; i < valores.length; i++){
         });
 
     g.append("text")
-        .attr("transform", function(d) { return "translate(-25,"+(-(outerRadius-30)+i*25)+")"; })
+        .attr("transform", function() { return "translate(-30,"+(-(outerRadius-30)+i*25)+")"; })
         .attr("dy", ".35em")
         .style("text-anchor", "middle")
-        .style("foreground","red")
+        .style("color","red")
+        .attr('font-family','Arial')
+        .attr('font-size',15)
+        .attr('font-weight',900)
+        .attr('fill','#484748')
         .attr("class","textValue")
         .text(valores[i].value+"%");
 }
-    }}
+        //option save
+        if(config.save){
+            if(!config.save.text){
+                config.save.text = 'SAVE AS PNG';
+            }
+
+            chart.append('input').attr('type','button').attr('id','save').attr('value',config.save.text);
+            d3.select("#save").on("click", function(){
+                var html = d3.select("svg")
+                    .attr("version", 1.1)
+                    .attr("xmlns", "http://www.w3.org/2000/svg")
+                    .node().parentNode.innerHTML;
+                //console.log(html);
+                var imgsrc = 'data:image/svg+xml;base64,'+ btoa(html);
+
+                chart.append('canvas').attr("width", width).attr("height", height).style('display','none');
+                var canvas = document.querySelector("canvas"),
+                    context = canvas.getContext("2d");
+
+                var image = new Image();
+                image.src = imgsrc;
+                image.onload = function() {
+                    context.drawImage(image, 0, 0);
+                    var canvasdata = canvas.toDataURL("image/png");
+                    var pngimg = '<img src="'+canvasdata+'">';
+                    d3.select("#pngdataurl").style('display','none').html(pngimg);
+                    var a = document.createElement("a");
+                    a.download = "sample.png";
+                    a.href = canvasdata;
+                    a.click();
+                    window.location = canvas.toDataURL("image/png");
+
+                };
+            });
+        }
+        else{
+            console.log("NO TIENE SAVE");
+        }
+    }
+
+
+}

@@ -5226,7 +5226,9 @@
 
     c3_chart_internal_fn.initBrush = function () {
         var $$ = this, d3 = $$.d3;
-        $$.brush = d3.svg.brush().on("brush", function () { $$.redrawForBrush(); });
+        $$.brush = d3.svg.brush().on("brush", function () {
+            $$.redrawForBrush();
+        });
         $$.brush.update = function () {
             if ($$.context) { $$.context.select('.' + CLASS.brush).call(this); }
             return this;
@@ -5241,7 +5243,8 @@
 
         context.attr('class','subchart_haikus')
         context.style('visibility', config.subchart_show ? 'visible' : 'hidden');
-
+        //agregando clase subchart_haikus para poder obtenerlo
+        context.attr('class','subchart_haikus')
         // Define g for chart area
         context.append('g')
             .attr("clip-path", $$.clipPathForSubchart)
@@ -6603,10 +6606,14 @@
         }
     };
     c3_chart_fn.axis.range = function (range) {
+        console.log("llamando al range");
+        console.log(range);
         if (arguments.length) {
+            console.log("entro");
             if (isDefined(range.max)) { this.axis.max(range.max); }
             if (isDefined(range.min)) { this.axis.min(range.min); }
         } else {
+            console.log("se fue mal");
             return {
                 max: this.axis.max(),
                 min: this.axis.min()

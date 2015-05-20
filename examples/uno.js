@@ -88,7 +88,7 @@ var chart2 = c3.generate({
         }
     },
     subchart: {
-        show:false
+        show: false
     }
 
 });
@@ -130,13 +130,14 @@ var chart3 = c3.generate({
         enabled: false
     },
     subchart: {
-        show:true,
+        show: true,
         onbrush: function (d) {
-            console.info(d);
-            chart.zoom(d);
-            chart2.zoom(d);
-
+            console.log(d);
+            m_updateGrafica(d[0], d[1]);
         }
+    },
+    onresize: function(){
+        d3.select("#chart3 svg .subchart_haikus").attr("transform", 'translate(50.5,0.5)');
     }
 
 });
@@ -219,19 +220,29 @@ var chart = c3.generate({
 });
 charts.push(chart);
 charts.push(chart2);
+charts.push(chart3);
 //Quita los datos correspondientes de esta grafica
 chart.unload({
     ids: ['IPC', 'YAHOO']
 });
 
 var shchart3 = d3.selectAll('#chart3');
-var svg3 =shchart3.select('svg');
+var svg3 = shchart3.select('svg');
 
 //desapareciendo la grafica para trabajar solo con el subchart
 var gs = svg3.select('g');
 var gsubchart = svg3.select('.subchart_haikus');
-gs.style('display','none');
+gs.style('display', 'none');
+gs.remove();
+
 gsubchart.attr("transform", 'translate(50.5,0.5)');
+
+window.addEventListener('resize', function (){
+    gsubchart.attr("transform", 'translate(50.5,0.5)');
+});
+
+
+//chart3.internal.redraw({},["2015-02-09","2015-03-09"])
 
 //para  mostrar tooltip
 function showTooltip(indexChart, event, d) {

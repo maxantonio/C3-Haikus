@@ -296,7 +296,7 @@ i18n.extend({
   //English
   "from": "From",
   "to": "To",
-  "select": "Select",
+  "select": "Select"
 
 
 });
@@ -305,35 +305,28 @@ if (i18n.locale() == "es") i18n.extend({
   //Spanish
   "from": "Desde",
   "to": "Hasta",
-   "select": "Selecione",
+   "select": "Selecione"
 
 });
 ;//Este modulo es dependiente de, D3,C3,Polyglot
 var StockTools = function (raiz, periodos) {
     'use strict';
-
     //actual simbolo que se esta comparando
     var current_selected_value = "";
     var ids = [];
-
     //Crea los componentes
     init();
-
     function init() {
-
         var header = d3.select(raiz).append("div")
             .attr("class", "c3-header");
-
         // Crea el contenedor de los periodos
         var p = header.append("div")
             .attr('class', 'c3-periodos')
             .style('float', 'left');
-
         // Crea el contenedor de los intervalos (input para las fechas)
         var intervalos = header.append("div")
             .attr('class', 'c3-intervalos')
             .style('float', 'left');
-
         // Crea el texto y el input para la fecha inicial
         intervalos.append("span").text(i18n.t("from"));
         intervalos.append("input")
@@ -452,8 +445,7 @@ var StockTools = function (raiz, periodos) {
 
             if (m_intervalo_Correcto(fechaInicio, fechaFin)) {
                 m_updateGrafica(fechaInicio, fechaFin);
-                document.getElementById("inicio").value = formatDate(fechaInicio);
-                document.getElementById("fin").value = formatDate(fechaFin);
+
             }
             else
                 throw new Error("No hay datos para este intervalo");
@@ -469,11 +461,7 @@ var StockTools = function (raiz, periodos) {
                 throw new Error("Intervalo incorrecto.");
         }
 
-        function m_updateGrafica(fechaInicio, fechafin) {
-            var dominio = [fechaInicio, fechafin];
-            chart.zoom(dominio);
-            chart2.zoom(dominio);
-        }
+
 
         //Dev true si las fechas estan en el intervalo de los datos
         //si no se especifica la fechaFin se entiende que es hasta la ultima fecha de los datos
@@ -578,3 +566,14 @@ var StockTools = function (raiz, periodos) {
     }
 
 };
+//extrallendo updateGrafica
+function m_updateGrafica(fechaInicio, fechafin) {
+    console.log("fecha fin"+fechafin);
+    var dominio = [fechaInicio, fechafin];
+    chart.zoom(dominio);
+    chart2.zoom(dominio);
+    //actualiza el brush si existe
+    chart3.internal.brush.extent(dominio).update();
+    d3.select("#inicio").attr('value',formatDate(fechaInicio));
+    d3.select("#fin").attr('value',formatDate(fechafin));
+}
