@@ -231,7 +231,10 @@ var gs = svg3.select('g');
 var gsubchart = svg3.select('.subchart_haikus');
 gs.style('display','none');
 gsubchart.attr("transform", 'translate(50.5,0.5)');
-
+//reajustando posicion cuando se redimenciona la ventana
+window.addEventListener('resize', function (){
+    gsubchart.attr("transform", 'translate(50.5,0.5)');
+});
 //chart3.internal.redraw({},["2015-02-09","2015-03-09"])
 
 //para  mostrar tooltip
@@ -242,3 +245,4 @@ function showTooltip(indexChart, event, d) {
         data: d
     });
 }
+
