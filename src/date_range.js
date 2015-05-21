@@ -114,7 +114,7 @@ var StockTools = function (raiz, periodos) {
                 var tipo = p.attr('data-tipo');
                 var cantidad = p.attr('data-value');
                 var fechaInicio = m_getFechaInicio(tipo, cantidad);
-                d3.select("#inicio").attr("value",formatDate(fechaInicio));
+                d3.select("#inicio").attr("value", formatDate(fechaInicio));
             }
         }
 
@@ -131,10 +131,32 @@ var StockTools = function (raiz, periodos) {
             var posLastDate = datos.columns[0].length - 1;
             var fechaFin = parseDate(datos.columns[0][posLastDate]);
             var fechaInicio = m_getFechaInicio(tipo, cantidad);
-            if (m_intervalo_Correcto(fechaInicio, fechaFin))
-                m_updateGrafica(fechaInicio, fechaFin);
-            else
-                throw new Error("No hay datos para este intervalo");
+
+            //Si estamos comparando, enteonces recalcular y graficar cargar los nuevos datos
+            if (comparando) {
+
+                d3.select("#inicio").attr('value', formatDate(fechaInicio));
+                d3.select("#fin").attr('value', formatDate(fechaFin));
+                var datos_a_cargar = [];
+
+                //esta es los datos de comparacion de la 1ra empresa, que es la que se compara con las demas
+                var r1 = m_calcular_comparacion(datos.columns[1][0], 1, document.getElementById("inicio").value, document.getElementById("fin").value);
+
+                var index = document.getElementsByClassName("c3_cmp")[0].selectedIndex;
+                var r2 = m_calcular_comparacion(current_selected_value, (index + 1), document.getElementById("inicio").value, document.getElementById("fin").value);
+                datos_a_cargar.push(r1);
+                datos_a_cargar.push(r2);
+                var dominio = [fechaInicio, fechaFin];
+                chart.zoom(dominio);
+                chart2.zoom(dominio);
+                chart3.internal.brush.extent(dominio).update();
+                chart.load({columns: datos_a_cargar});
+            } else {
+                if (m_intervalo_Correcto(fechaInicio, fechaFin))
+                    m_updateGrafica(fechaInicio, fechaFin);
+                else
+                    throw new Error("No hay datos para este intervalo");
+            }
         }
 
         //Obtiene la fecha de inicio segun el tipo del periodo y la cantidad que se le pase
