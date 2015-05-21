@@ -296,7 +296,7 @@ i18n.extend({
   //English
   "from": "From",
   "to": "To",
-  "select": "Select"
+  "select": "Select",
 
 
 });
@@ -305,28 +305,35 @@ if (i18n.locale() == "es") i18n.extend({
   //Spanish
   "from": "Desde",
   "to": "Hasta",
-   "select": "Selecione"
+   "select": "Selecione",
 
 });
 ;//Este modulo es dependiente de, D3,C3,Polyglot
 var StockTools = function (raiz, periodos) {
     'use strict';
+
     //actual simbolo que se esta comparando
     var current_selected_value = "";
     var ids = [];
-    //Crea los componentes
+
+    //Crea los componentes y sus eventos
     init();
+
     function init() {
+
         var header = d3.select(raiz).append("div")
             .attr("class", "c3-header");
+
         // Crea el contenedor de los periodos
         var p = header.append("div")
             .attr('class', 'c3-periodos')
             .style('float', 'left');
+
         // Crea el contenedor de los intervalos (input para las fechas)
         var intervalos = header.append("div")
             .attr('class', 'c3-intervalos')
             .style('float', 'left');
+
         // Crea el texto y el input para la fecha inicial
         intervalos.append("span").text(i18n.t("from"));
         intervalos.append("input")
@@ -395,8 +402,8 @@ var StockTools = function (raiz, periodos) {
             .enter()
             .append("button")
             .attr("type", "button")
-            .attr("class", function (p, i) {
-                return "button" + i;
+            .attr("class", function (p) {
+                return p.seleccionado ? "button selected" : "button";
             })
             .attr("data-value", function (p) {
                 return p.cantidad;
@@ -408,6 +415,18 @@ var StockTools = function (raiz, periodos) {
                 return d.texto;
             }).on('click', e_click_periodo);
 
+        //Estableciendo la fecha inicial acorde con el periodo seleccionado
+        m_establecer_fecha_inicial();
+
+        function m_establecer_fecha_inicial() {
+            var p = d3.select(".c3-periodos .selected");
+            if (p[0][0] != null) {
+                var tipo = p.attr('data-tipo');
+                var cantidad = p.attr('data-value');
+                var fechaInicio = m_getFechaInicio(tipo, cantidad);
+                d3.select("#inicio").attr("value",formatDate(fechaInicio));
+            }
+        }
 
         //Evento click  en un boton del periodo
         function e_click_periodo() {
@@ -420,13 +439,22 @@ var StockTools = function (raiz, periodos) {
 
             //Ultima fecha de los datos a graficar
             var posLastDate = datos.columns[0].length - 1;
-
             var fechaFin = parseDate(datos.columns[0][posLastDate]);
-            var fechaInicio = new Date(fechaFin.getTime());
+            var fechaInicio = m_getFechaInicio(tipo, cantidad);
+            if (m_intervalo_Correcto(fechaInicio, fechaFin))
+                m_updateGrafica(fechaInicio, fechaFin);
+            else
+                throw new Error("No hay datos para este intervalo");
+        }
 
-            // Inicio y fin de los datos
-            var inicioDatos = parseDate(datos.columns[0][1]);
-            var finDatos = fechaFin;
+        //Obtiene la fecha de inicio segun el tipo del periodo y la cantidad que se le pase
+        function m_getFechaInicio(tipo, cantidad) {
+
+            //Ultima fecha de los datos a graficar
+            var posLastDate = datos.columns[0].length - 1;
+            var fechaFin = parseDate(datos.columns[0][posLastDate]);
+
+            var fechaInicio = new Date(fechaFin.getTime());
 
             switch (tipo) {
                 case "dia":
@@ -436,42 +464,22 @@ var StockTools = function (raiz, periodos) {
                     fechaInicio.setMonth(fechaFin.getMonth() - cantidad);
                     break;
                 case "anno":
-                    fechaInicio.setYear(fechaFin.getFullYear() - cantidad); //Le resta 2 años
+                    fechaInicio.setYear(fechaFin.getFullYear() - cantidad);
                     break;
                 case "hasta_la_fecha":
                     fechaInicio = new Date(fechaFin.getFullYear(), 0, 1);
                     break;
             }
-
-            if (m_intervalo_Correcto(fechaInicio, fechaFin)) {
-                m_updateGrafica(fechaInicio, fechaFin);
-
-            }
-            else
-                throw new Error("No hay datos para este intervalo");
+            return fechaInicio;
         }
 
         function e_update_click() {
             var fechaInicio = parseDate(document.getElementById("inicio").value);
             var fechaFin = parseDate(document.getElementById("fin").value);
-            if (m_intervalo_Correcto(fechaInicio, fechaFin)) {
+            if (m_intervalo_Correcto(fechaInicio, fechaFin))
                 m_updateGrafica(fechaInicio, fechaFin);
-            }
             else
-                throw new Error("Intervalo incorrecto.");
-        }
-
-
-
-        //Dev true si las fechas estan en el intervalo de los datos
-        //si no se especifica la fechaFin se entiende que es hasta la ultima fecha de los datos
-        function m_intervalo_Correcto(fechaInicio, fechaFin) {
-            var posLastDate = datos.columns[0].length - 1;
-            var inicioDatos = parseDate(datos.columns[0][1]);
-            var finDatos = parseDate(datos.columns[0][posLastDate]);
-            fechaFin || (fechaFin = finDatos);
-
-            return fechaInicio >= inicioDatos && fechaFin <= finDatos;
+                throw new Error("No hay datos para este intervalo");
         }
 
         //return la pos donde se encuentra esta fecha en los datos originales
@@ -557,23 +565,35 @@ var StockTools = function (raiz, periodos) {
                     current_selected_value = "";
                     comparando = false;
                 }
-
-
             } else
                 throw new Error("Intervalo incorrecto");
 
         }
     }
-
 };
-//extrallendo updateGrafica
-function m_updateGrafica(fechaInicio, fechafin) {
-    console.log("fecha fin"+fechafin);
-    var dominio = [fechaInicio, fechafin];
+
+//Dev true si las fechas estan en el intervalo de los datos
+//si no se especifica la fechaFin se entiende que es hasta la ultima fecha de los datos
+function m_intervalo_Correcto(fechaInicio, fechaFin) {
+
+    var posLastDate = datos.columns[0].length - 1;
+    var inicioDatos = parseDate(datos.columns[0][1]);
+    var finDatos = parseDate(datos.columns[0][posLastDate]);
+    fechaFin || (fechaFin = finDatos);
+    console.info(fechaInicio, fechaFin);
+    console.info(inicioDatos, finDatos);
+
+    return fechaInicio >= inicioDatos && fechaFin <= finDatos;
+}
+
+function m_updateGrafica(fechaInicio, fechaFin) {
+
+    console.log("fecha fin" + fechaFin);
+    var dominio = [fechaInicio, fechaFin];
     chart.zoom(dominio);
     chart2.zoom(dominio);
     //actualiza el brush si existe
     chart3.internal.brush.extent(dominio).update();
-    d3.select("#inicio").attr('value',formatDate(fechaInicio));
-    d3.select("#fin").attr('value',formatDate(fechafin));
+    d3.select("#inicio").attr('value', formatDate(fechaInicio));
+    d3.select("#fin").attr('value', formatDate(fechaFin));
 }

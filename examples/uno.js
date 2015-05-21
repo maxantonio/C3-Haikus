@@ -40,6 +40,7 @@ function datos_aleatorios(cant) {
 datos.onmouseover = function (d) {
     showTooltip(1, d3.event, d)
 }
+
 //Cuando se mueve el mouse por la grafica de volumen
 datos_volumen.onmouseover = function (d) {
     showTooltip(0, d3.event, d)
@@ -89,8 +90,10 @@ var chart2 = c3.generate({
     },
     subchart: {
         show: false
+    },
+    onmouseout: function () {
+        chart.tooltip.hide();
     }
-
 });
 var chart3 = c3.generate({
     bindto: "#chart3",
@@ -135,11 +138,7 @@ var chart3 = c3.generate({
             console.log(d);
             m_updateGrafica(d[0], d[1]);
         }
-    },
-    onresize: function(){
-        d3.select("#chart3 svg .subchart_haikus").attr("transform", 'translate(50.5,0.5)');
     }
-
 });
 
 //sobreescribiendo el metodo tooltip.show para evitar la propagacion del mouseover
@@ -196,9 +195,6 @@ var chart = c3.generate({
             }
         }
     },
-    /* zoom: {
-     enabled: false
-     },*/
     grid: {
         x: {
             show: true
@@ -216,6 +212,9 @@ var chart = c3.generate({
                 return comparando ? value + "%" : d3.format(',')(value);
             }
         }
+    },
+    onmouseout: function () {
+        chart2.tooltip.hide();
     }
 });
 charts.push(chart);
@@ -233,16 +232,12 @@ var svg3 = shchart3.select('svg');
 var gs = svg3.select('g');
 var gsubchart = svg3.select('.subchart_haikus');
 gs.style('display', 'none');
-gs.remove();
-
 gsubchart.attr("transform", 'translate(50.5,0.5)');
 
-window.addEventListener('resize', function (){
+//reajustando posicion cuando se redimenciona la ventana
+window.addEventListener('resize', function () {
     gsubchart.attr("transform", 'translate(50.5,0.5)');
 });
-
-
-//chart3.internal.redraw({},["2015-02-09","2015-03-09"])
 
 //para  mostrar tooltip
 function showTooltip(indexChart, event, d) {
@@ -252,3 +247,11 @@ function showTooltip(indexChart, event, d) {
         data: d
     });
 }
+
+function mostrar_periodo_seleccionado(){
+    var fechaInicio = parseDate(document.getElementById("inicio").value);
+    var fechaFin = parseDate(document.getElementById("fin").value);
+    m_updateGrafica(fechaInicio, fechaFin);
+}
+
+mostrar_periodo_seleccionado();
