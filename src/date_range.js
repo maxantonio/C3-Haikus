@@ -135,8 +135,8 @@ var StockTools = function (raiz, periodos) {
             //Si estamos comparando, enteonces recalcular y graficar cargar los nuevos datos
             if (comparando) {
 
-                d3.select("#inicio").attr('value', formatDate(fechaInicio));
-                d3.select("#fin").attr('value', formatDate(fechaFin));
+                document.getElementById("inicio").value = formatDate(fechaInicio);
+                document.getElementById("fin").value = formatDate(fechaFin);
                 var datos_a_cargar = [];
 
                 //esta es los datos de comparacion de la 1ra empresa, que es la que se compara con las demas
@@ -151,6 +151,7 @@ var StockTools = function (raiz, periodos) {
                 chart2.zoom(dominio);
                 chart3.internal.brush.extent(dominio).update();
                 chart.load({columns: datos_a_cargar});
+
             } else {
                 if (m_intervalo_Correcto(fechaInicio, fechaFin))
                     m_updateGrafica(fechaInicio, fechaFin);
@@ -188,8 +189,27 @@ var StockTools = function (raiz, periodos) {
         function e_update_click() {
             var fechaInicio = parseDate(document.getElementById("inicio").value);
             var fechaFin = parseDate(document.getElementById("fin").value);
-            if (m_intervalo_Correcto(fechaInicio, fechaFin))
-                m_updateGrafica(fechaInicio, fechaFin);
+            if (m_intervalo_Correcto(fechaInicio, fechaFin)) {
+                if (comparando) {
+
+                    var datos_a_cargar = [];
+
+                    //esta es los datos de comparacion de la 1ra empresa, que es la que se compara con las demas
+                    var r1 = m_calcular_comparacion(datos.columns[1][0], 1, document.getElementById("inicio").value, document.getElementById("fin").value);
+
+                    var index = document.getElementsByClassName("c3_cmp")[0].selectedIndex;
+                    var r2 = m_calcular_comparacion(current_selected_value, (index + 1), document.getElementById("inicio").value, document.getElementById("fin").value);
+                    datos_a_cargar.push(r1);
+                    datos_a_cargar.push(r2);
+                    var dominio = [fechaInicio, fechaFin];
+                    chart.zoom(dominio);
+                    chart2.zoom(dominio);
+                    chart3.internal.brush.extent(dominio).update();
+                    chart.load({columns: datos_a_cargar});
+
+                } else
+                    m_updateGrafica(fechaInicio, fechaFin);
+            }
             else
                 throw new Error("No hay datos para este intervalo");
         }
