@@ -321,15 +321,21 @@ var StockTools = function (raiz, periodos) {
             .attr("class", "c3-header");
         // Crea el contenedor de los periodos
         var p = header.append("div")
-            .attr('class', 'c3-periodos')
-            .style('float', 'left');
+        .attr('class', 'c3-periodos')
+        //.style('float', 'left')
+        .append("ul")
+        .attr('class', 'c3-periodos');
         // Crea el contenedor de los intervalos (input para las fechas)
         var intervalos = header.append("div")
-            .attr('class', 'c3-intervalos')
-            .style('float', 'left');
+                .attr('class', 'c3-intervalos')
+                //.style('float', 'left')
+                .append("ul")
+                .attr('class', 'c3-intervalos')
+            ;
         // Crea el texto y el input para la fecha inicial
-        intervalos.append("span").text(i18n.t("from"));
-        intervalos.append("input")
+        intervalos.append("li").text(i18n.t("from"));
+        intervalos.append("li")
+            .append("input")
             .attr("type", "text")
             .style("text-align", "center")
             .attr("name", "inicio")
@@ -337,8 +343,9 @@ var StockTools = function (raiz, periodos) {
             .attr('value', datos.columns[0][1]);
 
         // Crea el texto y el input para la fecha final
-        intervalos.append("span").text(i18n.t("to"));
-        intervalos.append("input")
+        intervalos.append("li").text(i18n.t("to"));
+        intervalos.append("li")
+            .append("input")
             .attr("type", "text")
             .style("text-align", "center")
             .attr("name", "fin")
@@ -347,15 +354,20 @@ var StockTools = function (raiz, periodos) {
 
         // Div contenedor de los botones
         var botones = header.append("div")
-            .attr('class', 'c3-botones')
-            .style('float', 'left');
+                .attr('class', 'c3-botones')
+                //.style('float', 'left')
+                .append("ul")
+                .attr('class', 'c3-botones')
+            ;
 
         // Boton Actualizar
-        botones.append("button")
+        botones.append("li")
             .attr("id", "update")
-            .attr("type", "button")
+            .on('click', e_update_click)
+            .append("a")
+            .attr('href', '#')
             .text("Actualizar")
-            .on('click', e_update_click);
+        ;
 
         // Botones para comparar
         datos.columns.forEach(function (d, i) {
@@ -365,7 +377,8 @@ var StockTools = function (raiz, periodos) {
         });
         ids[0] = i18n.t("select");
 
-        var select = botones.append("select")
+        var select = botones.append("li")
+            .append("select")
             .attr("class", "c3_cmp");
 
         select.selectAll("opciones")
@@ -393,8 +406,8 @@ var StockTools = function (raiz, periodos) {
         p.selectAll("botones")
             .data(periodos)
             .enter()
-            .append("button")
-            .attr("type", "button")
+            .append("li")
+            //.attr("type", "button")
             .attr("class", function (p, i) {
                 return "button" + i;
             })
@@ -404,9 +417,13 @@ var StockTools = function (raiz, periodos) {
             .attr("data-tipo", function (p) {
                 return p.tipo;
             })
+            .on('click', e_click_periodo)
+            .append("a")
+            .attr("href", "#")
             .text(function (d) {
                 return d.texto;
-            }).on('click', e_click_periodo);
+            })
+        ;
 
 
         //Evento click  en un boton del periodo
