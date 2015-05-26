@@ -9,7 +9,7 @@ var bisect = d3.bisector(function (d) {
 var comparando = false;
 
 datos_aleatorios(total_datos);
-var p = new StockTools("#chart-header", periodos);
+var obj_stookTools = new StockTools("#chart-header", periodos);
 
 //Genera datos aleatorios a partir de la fecha actual hacia atras
 function datos_aleatorios(cant) {
@@ -135,8 +135,7 @@ var chart3 = c3.generate({
     subchart: {
         show: true,
         onbrush: function (d) {
-            console.log(d);
-            m_updateGrafica(d[0], d[1]);
+            m_aux_Update(obj_stookTools, d[0], d[1]);
         }
     }
 });
@@ -248,7 +247,7 @@ function showTooltip(indexChart, event, d) {
     });
 }
 
-function mostrar_periodo_seleccionado(){
+function mostrar_periodo_seleccionado() {
     var fechaInicio = parseDate(document.getElementById("inicio").value);
     var fechaFin = parseDate(document.getElementById("fin").value);
     m_updateGrafica(fechaInicio, fechaFin);
