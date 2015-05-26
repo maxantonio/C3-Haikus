@@ -516,8 +516,11 @@ var StockTools = function (raiz, periodos) {
                 break;
             case "hasta_la_fecha":
                 var ano = new Date().getFullYear();
-                fechaInicio = new Date(fechaFin.getFullYear(), 0, 1);
 
+                //1er dia del ano
+                var dia_uno = new Date(fechaFin.getFullYear(), 0, 1);
+                var pos = bisect(datos.columns[0], dia_uno);
+                fechaInicio = parseDate(datos.columns[0][pos]);
                 break;
         }
         return fechaInicio;
