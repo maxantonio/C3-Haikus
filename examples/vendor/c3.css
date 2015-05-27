@@ -218,6 +218,12 @@ ul.c3-periodos , ul.c3-intervalos
     display: inline-block;
     padding: 4px 6px;
 }
+
+.c3-periodos li > a.activo {
+    border-bottom: 2px solid #0f8eff;
+    color: #0f8eff;
+}
+
 /*-- body --*/
 body {
     display: block;

@@ -13,21 +13,19 @@
     <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>-->
 </head>
 <body>
-<div class="text-center col-md-12">
+<div class="text-center col-md-12" style=" width: 95%">
     <h1>Grafica de precios n1</h1>
 
     <div id="chart-header"></div>
-    <div id="chartBody">
-        <div id="chart"></div>
-        <div id="chart2"></div>
-        <div id="chart3"></div>
-    </div>
+    <div id="chart"></div>
+    <div id="chart2"></div>
+    <div id="chart3"></div>
 </div>
 
 <script>
     var locale = "es";
     var formato = '%Y-%m-%d';
-    var total_datos = 100;
+    var total_datos = 150;
 
     //Periodos
     var periodos = [
@@ -35,12 +33,12 @@
             texto: "1D",
             cantidad: 1,
             tipo: "dia",
-            seleccionado: true
+            seleccionado: false
         }, {
             texto: "2D",
             cantidad: 2,
             tipo: "dia",
-            seleccionado: false
+            seleccionado: true
         }, {
             texto: "4D",
             cantidad: 4,

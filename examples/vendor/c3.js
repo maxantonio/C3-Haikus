@@ -175,6 +175,7 @@
     };
 
     c3_chart_internal_fn.initWithData = function (data) {
+
         var $$ = this, d3 = $$.d3, config = $$.config;
         var defs, main, binding = true;
 
@@ -5240,21 +5241,22 @@
         var $$ = this, config = $$.config,
             context = $$.context = $$.svg.append("g").attr("transform", $$.getTranslate('context'));
 
+        context.attr('class','subchart_haikus')
         context.style('visibility', config.subchart_show ? 'visible' : 'hidden');
         //agregando clase subchart_haikus para poder obtenerlo
         context.attr('class','subchart_haikus')
         // Define g for chart area
         context.append('g')
             .attr("clip-path", $$.clipPathForSubchart)
-            .attr('class', CLASS.chart);
+            .attr('class', CLASS.chart + " yury");
 
         // Define g for bar chart area
         context.select('.' + CLASS.chart).append("g")
-            .attr("class", CLASS.chartBars);
+            .attr("class", CLASS.chartBars + " yury_2");
 
         // Define g for line chart area
         context.select('.' + CLASS.chart).append("g")
-            .attr("class", CLASS.chartLines);
+            .attr("class", CLASS.chartLines+ " yury_3");
 
         // Add extent rect for Brush
         context.append("g")
@@ -5942,6 +5944,19 @@
         });
     };
 
+    //c3_chart_fn.zoom = function (domain) {
+    //    var $$ = this.internal;
+    //    if (domain) {
+    //        if ($$.isTimeSeries()) {
+    //            domain = domain.map(function (x) { return $$.parseDate(x); });
+    //        }
+    //        $$.brush.extent(domain);
+    //        $$.redraw({withUpdateXDomain: true, withY: $$.config.zoom_rescale});
+    //        $$.config.zoom_onzoom.call(this, $$.x.orgDomain());
+    //    }
+    //    return $$.brush.extent();
+    //};
+
     c3_chart_fn.zoom = function (domain) {
         var $$ = this.internal;
         if (domain) {
@@ -5956,6 +5971,7 @@
         }
         return $$.brush.extent();
     };
+
     c3_chart_fn.zoom.enable = function (enabled) {
         var $$ = this.internal;
         $$.config.zoom_enabled = enabled;
