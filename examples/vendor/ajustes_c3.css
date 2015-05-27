@@ -19,12 +19,12 @@ ul.c3-periodos, ul.c3-intervalos {
     margin: 2px;
 }
 
-.c3-periodos li > a:hover, .c3-periodos li > a:active {
+.c3-periodos li > a:hover, .c3-periodos li > a:active , .c3-intervalos-contenedor > ul > li > a:active, .c3-intervalos-contenedor > ul > li > a:hover {
     border-bottom: 2px solid #0f8eff;
     color: #0f8eff;
 }
 
-.c3-botones li > a {
+/*.c3-botones li > a {
     border-radius: 4px;
     border-width: 1px;
     box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -40,11 +40,11 @@ ul.c3-periodos, ul.c3-intervalos {
     border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
     color: #ffffff;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-}
+}*/
 
 .c3-intervalos, .c3-botones {
     margin: 5px;
-    display: inline-block;
+    /*display: inline-block;*/
 }
 
 .c3-intervalos > li > input {
@@ -56,7 +56,7 @@ ul.c3-periodos, ul.c3-intervalos {
     padding: 4px 5px;
 }
 
-.c3-botones > li > select {
+.c3-botones > select {
     background-color: #ffffff;
     border: 1px solid #cccccc;
     line-height: 30px;
@@ -103,9 +103,10 @@ ul.c3-periodos, ul.c3-intervalos {
 .form-intervalos-fechas {
     border: 1px solid rgba(0, 0, 0, 0.4);
     padding: 8px;
-    width: 460px;
+    width: 400px;
     background: none repeat scroll 0% 0% rgba(255, 255, 255, 0.78);
     border-radius: 4px;
+    margin-top: 10px;
 }
 
 .form-intervalos-fechas .divFechas {
@@ -114,14 +115,27 @@ ul.c3-periodos, ul.c3-intervalos {
     padding: 5px
 }
 
+.divFechas > span {
+    margin: 5px;
+}
+
 .form-intervalos-fechas .divFechas input {
     text-align: center;
+    border: 1px solid #cccccc;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s;
+    width: 85px;
+    padding: 4px 5px;
 }
 
 .form-intervalos-fechas .btn-Actualizar-contenedor {
     padding: 5px;
 }
 
-.btn-Actualizar-contenedor .btn-Actualizar {
-
+.btn-Actualizar-contenedor > #btn-actualizar{
+    color: #FFF;
+    padding: 2px 5px;
+    border-radius: 4px;
+    background-color: #0F8EFF;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
 }
