@@ -71,4 +71,57 @@ ul.c3-periodos, ul.c3-intervalos {
     color: #0f8eff;
 }
 
-/*Para boton de la fecha*/
+/*Para el boton de l.os intervalos de fechas*/
+.c3-periodos-contenedor {
+    float: left;
+}
+
+.c3-intervalos-contenedor {
+    float: left;
+}
+
+.c3-intervalos-contenedor ul {
+    padding: 0;
+    margin: 0;
+}
+
+.c3-intervalos-contenedor li {
+    display: inline;
+    position: relative;
+}
+
+.c3-intervalos-contenedor ul ul {
+    position: absolute;
+    display: none;
+}
+
+.c3-intervalos-contenedor li:hover ul {
+    display: block;
+    z-index: 10;
+}
+
+.form-intervalos-fechas {
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    padding: 8px;
+    width: 460px;
+    background: none repeat scroll 0% 0% rgba(255, 255, 255, 0.78);
+    border-radius: 4px;
+}
+
+.form-intervalos-fechas .divFechas {
+    float: left;
+    /*border: 1px solid green;*/
+    padding: 5px
+}
+
+.form-intervalos-fechas .divFechas input {
+    text-align: center;
+}
+
+.form-intervalos-fechas .btn-Actualizar-contenedor {
+    padding: 5px;
+}
+
+.btn-Actualizar-contenedor .btn-Actualizar {
+
+}
