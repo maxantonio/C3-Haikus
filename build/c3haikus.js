@@ -296,7 +296,7 @@ i18n.extend({
   //English
   "from": "From",
   "to": "To",
-  "select": "Select",
+  "cmp": "Compare with",
 
 
 });
@@ -305,8 +305,7 @@ if (i18n.locale() == "es") i18n.extend({
   //Spanish
   "from": "Desde",
   "to": "Hasta",
-   "select": "Selecione",
-
+   "cmp": "Comparar con",
 });
 ;//actual simbolo que se esta comparando
 var current_selected_value = "";
@@ -326,35 +325,31 @@ var StockTools = function (raiz, periodos) {
 
         // Crea el contenedor de los periodos
         var p = header.append("div")
-            .attr('class', 'c3-periodos')
+            .attr('class', 'c3-periodos-contenedor')
             .append("ul")
             .attr('class', 'c3-periodos');
 
         // Crea el contenedor de los intervalos (input para las fechas)
         var intervalos = header.append("div")
-            .attr('class', 'c3-intervalos')
+            .attr('class', 'c3-intervalos-contenedor')
             .append("ul")
-            .attr('class', 'c3-intervalos');
+            .attr('class', '');
 
-        // Crea el texto y el input para la fecha inicial
-        intervalos.append("li").text(i18n.t("from"));
-        intervalos.append("li")
-            .append("input")
-            .attr("type", "text")
-            .style("text-align", "center")
-            .attr("name", "inicio")
-            .attr("id", "inicio")
-            .attr('value', datos.columns[0][1]);
+        var li = intervalos.append("li");
 
-        // Crea el texto y el input para la fecha final
-        intervalos.append("li").text(i18n.t("to"));
-        intervalos.append("li")
-            .append("input")
-            .attr("type", "text")
-            .style("text-align", "center")
-            .attr("name", "fin")
-            .attr("id", "fin")
-            .attr('value', datos.columns[0][datos.columns[0].length - 1]);
+        li.append("a").attr('href', '#').text("Fechas");
+        var divFechas = li.append('ul').append('li').append('div').attr("class", 'form-intervalos-fechas');
+
+        var inicio = divFechas.append("div").attr('class', 'divFechas');
+        inicio.html('<span>' + i18n.t("from") + ':</span><input type="text" name="inicio" id="inicio" value="' + datos.columns[0][1] + '">');
+
+        var fin = divFechas.append("div").attr('class', 'divFechas');
+        fin.html('<span>' + i18n.t("to") + ':</span><input type="text" name="fin" id="fin" value="' + datos.columns[0][datos.columns[0].length - 1] + '">');
+
+        var botonActualizar = divFechas.append("div").attr('class', 'btn-Actualizar-contenedor');
+        botonActualizar.html('<input id="btn-actualizar" type="button" value="OK">');
+
+        divFechas.append('div').style('clear', 'both');
 
         // Div contenedor de los botones
         var botones = header.append("div")
@@ -362,13 +357,15 @@ var StockTools = function (raiz, periodos) {
             .append("ul")
             .attr('class', 'c3-botones');
 
+        botonActualizar.select("input").on('click', self.e_update_click);
+
         // Boton Actualizar
-        botones.append("li")
-            .attr("id", "update")
-            .on('click', self.e_update_click)
-            .append("a")
-            .attr('href', '#')
-            .text("Actualizar");
+        //botones.append("li")
+        //    .attr("id", "update")
+        //    .on('click', self.e_update_click)
+        //    .append("a")
+        //    .attr('href', '#')
+        //    .text("Actualizar");
 
         // Botones para comparar
         datos.columns.forEach(function (d, i) {
@@ -376,7 +373,7 @@ var StockTools = function (raiz, periodos) {
                 ids.push(datos.columns[i][0]);
             }
         });
-        ids[0] = i18n.t("select");
+        ids[0] = i18n.t("cmp");
 
         var select = botones.append("select")
             .attr("class", "c3_cmp");

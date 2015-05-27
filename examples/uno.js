@@ -9,7 +9,7 @@ var bisect = d3.bisector(function (d) {
 var comparando = false;
 
 datos_aleatorios(total_datos);
-var p = new StockTools("#chart-header", periodos);
+var obj_stookTools = new StockTools("#chart-header", periodos);
 
 //Genera datos aleatorios a partir de la fecha actual hacia atras
 function datos_aleatorios(cant) {
@@ -40,6 +40,7 @@ function datos_aleatorios(cant) {
 datos.onmouseover = function (d) {
     showTooltip(1, d3.event, d)
 }
+
 //Cuando se mueve el mouse por la grafica de volumen
 datos_volumen.onmouseover = function (d) {
     showTooltip(0, d3.event, d)
@@ -88,9 +89,11 @@ var chart2 = c3.generate({
         }
     },
     subchart: {
-        show:false
+        show: false
+    },
+    onmouseout: function () {
+        chart.tooltip.hide();
     }
-
 });
 var chart3 = c3.generate({
     bindto: "#chart3",
@@ -130,13 +133,11 @@ var chart3 = c3.generate({
         enabled: false
     },
     subchart: {
-        show:true,
+        show: true,
         onbrush: function (d) {
-            console.log(d);
-            m_updateGrafica(d[0],d[1]);
+            m_aux_Update(obj_stookTools, d[0], d[1]);
         }
     }
-
 });
 
 //sobreescribiendo el metodo tooltip.show para evitar la propagacion del mouseover
@@ -193,9 +194,6 @@ var chart = c3.generate({
             }
         }
     },
-    /* zoom: {
-     enabled: false
-     },*/
     grid: {
         x: {
             show: true
@@ -213,6 +211,9 @@ var chart = c3.generate({
                 return comparando ? value + "%" : d3.format(',')(value);
             }
         }
+    },
+    onmouseout: function () {
+        chart2.tooltip.hide();
     }
 });
 charts.push(chart);
@@ -224,18 +225,18 @@ chart.unload({
 });
 
 var shchart3 = d3.selectAll('#chart3');
-var svg3 =shchart3.select('svg');
+var svg3 = shchart3.select('svg');
 
 //desapareciendo la grafica para trabajar solo con el subchart
 var gs = svg3.select('g');
 var gsubchart = svg3.select('.subchart_haikus');
-gs.style('display','none');
+gs.style('display', 'none');
 gsubchart.attr("transform", 'translate(50.5,0.5)');
+
 //reajustando posicion cuando se redimenciona la ventana
-window.addEventListener('resize', function (){
+window.addEventListener('resize', function () {
     gsubchart.attr("transform", 'translate(50.5,0.5)');
 });
-//chart3.internal.redraw({},["2015-02-09","2015-03-09"])
 
 //para  mostrar tooltip
 function showTooltip(indexChart, event, d) {
@@ -246,3 +247,10 @@ function showTooltip(indexChart, event, d) {
     });
 }
 
+function mostrar_periodo_seleccionado() {
+    var fechaInicio = parseDate(document.getElementById("inicio").value);
+    var fechaFin = parseDate(document.getElementById("fin").value);
+    m_updateGrafica(fechaInicio, fechaFin);
+}
+
+mostrar_periodo_seleccionado();
