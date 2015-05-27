@@ -296,7 +296,7 @@ i18n.extend({
   //English
   "from": "From",
   "to": "To",
-  "select": "Select",
+  "cmp": "Compare with",
 
 
 });
@@ -305,8 +305,7 @@ if (i18n.locale() == "es") i18n.extend({
   //Spanish
   "from": "Desde",
   "to": "Hasta",
-   "select": "Selecione",
-
+   "cmp": "Comparar con",
 });
 ;//actual simbolo que se esta comparando
 var current_selected_value = "";
@@ -332,7 +331,7 @@ var StockTools = function (raiz, periodos) {
 
         // Crea el contenedor de los intervalos (input para las fechas)
         var intervalos = header.append("div")
-            .attr('class', 'c3-intervalos')
+            .attr('class', 'c3-intervalos-contenedor')
             .append("ul")
             .attr('class', 'c3-intervalos');
 
@@ -376,7 +375,7 @@ var StockTools = function (raiz, periodos) {
                 ids.push(datos.columns[i][0]);
             }
         });
-        ids[0] = i18n.t("select");
+        ids[0] = i18n.t("cmp");
 
         var select = botones.append("select")
             .attr("class", "c3_cmp");

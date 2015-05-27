@@ -1,0 +1,74 @@
+/*-- btns--*/
+a {
+    color: #000;
+}
+
+a, a:hover, a:active {
+    text-decoration: none;
+    padding: 10px;
+}
+
+ul.c3-periodos, ul.c3-intervalos {
+    list-style: outside none none;
+    margin-left: 0;
+}
+
+.c3-periodos li, .c3-periodos, .c3-intervalos li, .c3-botones li {
+    border-bottom: 2px solid transparent;
+    display: inline-block;
+    margin: 2px;
+}
+
+.c3-periodos li > a:hover, .c3-periodos li > a:active {
+    border-bottom: 2px solid #0f8eff;
+    color: #0f8eff;
+}
+
+.c3-botones li > a {
+    border-radius: 4px;
+    border-width: 1px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05);
+    font-size: 14px;
+    line-height: 20px;
+    margin-bottom: 0;
+    padding: 4px 12px;
+    text-align: center;
+
+    background-color: #49afcd;
+    background-image: linear-gradient(to bottom, #5bc0de, #2f96b4);
+    background-repeat: repeat-x;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    color: #ffffff;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+
+.c3-intervalos, .c3-botones {
+    margin: 5px;
+    display: inline-block;
+}
+
+.c3-intervalos > li > input {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s;
+    width: 85px;
+    padding: 4px 5px;
+}
+
+.c3-botones > li > select {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    line-height: 30px;
+    border-radius: 4px;
+    color: #555555;
+    display: inline-block;
+    padding: 4px 6px;
+}
+
+.c3-periodos li > a.activo {
+    border-bottom: 2px solid #0f8eff;
+    color: #0f8eff;
+}
+
+/*Para boton de la fecha*/
