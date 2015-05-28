@@ -23,12 +23,11 @@ var StockTools = function (raiz, periodos) {
         // Crea el contenedor de los intervalos (input para las fechas)
         var intervalos = header.append("div")
             .attr('class', 'c3-intervalos-contenedor')
-            .append("ul")
-            .attr('class', '');
+            .append("ul");
 
         var li = intervalos.append("li");
 
-        li.append("a").attr('href', '#').text("Fechas");
+        li.append("a").attr('href', '#').text(i18n.t('date_range'));
         var divFechas = li.append('ul').append('li').append('div').attr("class", 'form-intervalos-fechas');
 
         var inicio = divFechas.append("div").attr('class', 'divFechas');

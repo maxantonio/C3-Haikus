@@ -297,8 +297,7 @@ i18n.extend({
   "from": "From",
   "to": "To",
   "cmp": "Compare with",
-
-
+  "date_range": "Date Range",
 });
 
 if (i18n.locale() == "es") i18n.extend({
@@ -306,6 +305,8 @@ if (i18n.locale() == "es") i18n.extend({
   "from": "Desde",
   "to": "Hasta",
    "cmp": "Comparar con",
+   "date_range": "Rango de Fechas",
+
 });
 ;//actual simbolo que se esta comparando
 var current_selected_value = "";
@@ -332,12 +333,11 @@ var StockTools = function (raiz, periodos) {
         // Crea el contenedor de los intervalos (input para las fechas)
         var intervalos = header.append("div")
             .attr('class', 'c3-intervalos-contenedor')
-            .append("ul")
-            .attr('class', '');
+            .append("ul");
 
         var li = intervalos.append("li");
 
-        li.append("a").attr('href', '#').text("Fechas");
+        li.append("a").attr('href', '#').text(i18n.t('date_range'));
         var divFechas = li.append('ul').append('li').append('div').attr("class", 'form-intervalos-fechas');
 
         var inicio = divFechas.append("div").attr('class', 'divFechas');
