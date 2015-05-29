@@ -342,9 +342,11 @@ var StockTools = function (raiz, periodos) {
 
         var inicio = divFechas.append("div").attr('class', 'divFechas');
         inicio.html('<span>' + i18n.t("from") + ':</span><input type="text" name="inicio" id="inicio" value="' + datos.columns[0][1] + '">');
+        inicio.select("input").on("keypress", self.e_input_enter);
 
         var fin = divFechas.append("div").attr('class', 'divFechas');
         fin.html('<span>' + i18n.t("to") + ':</span><input type="text" name="fin" id="fin" value="' + datos.columns[0][datos.columns[0].length - 1] + '">');
+        fin.select("input").on("keypress", self.e_input_enter);
 
         var botonActualizar = divFechas.append("div").attr('class', 'btn-Actualizar-contenedor');
         botonActualizar.html('<input id="btn-actualizar" type="button" value="OK">');
@@ -357,7 +359,7 @@ var StockTools = function (raiz, periodos) {
             .append("ul")
             .attr('class', 'c3-botones');
 
-        botonActualizar.select("input").on('click', self.e_update_click);
+        botonActualizar.select("input").on('click', self.m_update);
 
         // Boton Actualizar
         //botones.append("li")
@@ -555,6 +557,20 @@ var StockTools = function (raiz, periodos) {
             throw new Error("No hay datos para este intervalo");
     }
 
+
+    self.m_update = function () {
+        if (self.m_fecha_correcta(document.getElementById("inicio").value) && self.m_fecha_correcta(document.getElementById("fin").value)) {
+            self.e_update_click();
+        }
+    }
+
+    self.e_input_enter = function () {
+        if (d3.event.keyCode == 13) {
+            self.m_update();
+        }
+        return false;
+    }
+
     //return la pos donde se encuentra esta fecha en los datos originales
     self.m_buscarFecha = function (fecha) {
         return datos.columns[0].indexOf(fecha);
@@ -642,8 +658,22 @@ var StockTools = function (raiz, periodos) {
             throw new Error("Intervalo incorrecto");
     }
 
+    //Comprueba que la fecha sea correcta
+
+    self.m_fecha_correcta = function (fecha) {
+        return isValidDate(fecha);
+        function isValidDate(str) {
+            var parms = str.split('-');
+            var yyyy = parseInt(parms[0], 10);
+            var mm = parseInt(parms[1], 10);
+            var dd = parseInt(parms[2], 10);
+            var date = new Date(yyyy, mm - 1, dd, 0, 0, 0, 0);
+            return mm === (date.getMonth() + 1) && dd === date.getDate() && yyyy === date.getFullYear();
+        }
+    }
     //Crea los componentes y sus eventos
     init();
+
 };
 
 //Dev true si las fechas estan en el intervalo de los datos
@@ -657,7 +687,7 @@ function m_intervalo_Correcto(fechaInicio, fechaFin) {
     //console.info(fechaInicio, fechaFin);
     //console.info(inicioDatos, finDatos);
 
-    return fechaInicio >= inicioDatos && fechaFin <= finDatos;
+    return fechaFin > fechaInicio && fechaInicio >= inicioDatos && fechaFin <= finDatos;
 }
 
 //Metodo auxiliar hacer algunas y luego actualizar
