@@ -49,6 +49,9 @@ datos_volumen.onmouseover = function (d) {
 var charts = new Array();//contenedor de graficos para usar en showTooltip
 var chart2 = c3.generate({
     bindto: '#chart2',
+    bar:{
+        width:10
+    },
     data: datos_volumen,
     size: {
         height: 100
