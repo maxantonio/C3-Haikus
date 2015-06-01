@@ -684,9 +684,6 @@ function m_intervalo_Correcto(fechaInicio, fechaFin) {
     var inicioDatos = parseDate(datos.columns[0][1]);
     var finDatos = parseDate(datos.columns[0][posLastDate]);
     fechaFin || (fechaFin = finDatos);
-    //console.info(fechaInicio, fechaFin);
-    //console.info(inicioDatos, finDatos);
-
     return fechaFin > fechaInicio && fechaInicio >= inicioDatos && fechaFin <= finDatos;
 }
 
@@ -696,29 +693,17 @@ function m_aux_Update(obj_stock, fechaInicio, fechaFin) {
     document.getElementById("fin").value = formatDate(fechaFin);
     obj_stock.e_update_click();
 }
-//
-//function m_updateGrafica(fechaInicio, fechaFin) {
-//    //console.log("fecha fin" + fechaFin);
-//    var dominio = [fechaInicio, fechaFin];
-//    chart.zoom(dominio);
-//    chart2.zoom(dominio);
-//
-//    //actualiza el brush si existe
-//    chart3.internal.brush.extent(dominio).update();
-//    //
-//    //d3.select("#inicio").attr('value', formatDate(fechaInicio));
-//    //d3.select("#fin").attr('value', formatDate(fechaFin));
-//}
-
-
 
 function m_updateGrafica(fechaInicio, fechaFin) {
     var dominio = [fechaInicio, fechaFin];
+
     //calculando los tickValues para el rango actual
-    var ticks = m_generateTicks(fechaInicio,fechaFin);
+    var ticks = m_generateTicks(fechaInicio, fechaFin);
+
     //cambiando los tickValues y dando zoom para el 1er Grafico
     chart.internal.config.axis_x_tick_values = ticks;
     chart.zoom(dominio);
+
     //cambiando los tickValues y dando zoom para el 2do Grafico
     chart2.internal.config.axis_x_tick_values = ticks;
     chart2.zoom(dominio);
@@ -726,22 +711,22 @@ function m_updateGrafica(fechaInicio, fechaFin) {
     chart3.internal.brush.extent(dominio).update();
 }
 
-function m_generateTicks(fechaInicio,fechaFin){
+function m_generateTicks(fechaInicio, fechaFin) {
     var paso = 1;
     var diferencia = fechaFin - fechaInicio;
     diferencia = diferencia / 86400000;
-    if(diferencia>15)
+    if (diferencia > 15)
         paso = 2;
-    if(diferencia>=30)
+    if (diferencia >= 30)
         paso = 7
     var tickss = new Array();
-    var primero = fechaInicio*1;
-    var ultimo = fechaFin*1;
+    var primero = fechaInicio * 1;
+    var ultimo = fechaFin * 1;
     var dia = 86400000;
     var iterator = primero;
     tickss.push(primero);
     while (iterator < ultimo) {
-        iterator =iterator+ dia*paso;
+        iterator = iterator + dia * paso;
         tickss.push(iterator);
     }
     return tickss;
