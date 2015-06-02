@@ -385,6 +385,7 @@ function m_aux_Update(obj_stock, fechaInicio, fechaFin) {
 }
 
 function m_updateGrafica(fechaInicio, fechaFin) {
+
     var dominio = [fechaInicio, fechaFin];
 
     //calculando los tickValues para el rango actual
@@ -402,23 +403,58 @@ function m_updateGrafica(fechaInicio, fechaFin) {
 }
 
 function m_generateTicks(fechaInicio, fechaFin) {
-    var paso = 1;
+    var paso = m_calcularPaso(fechaInicio, fechaFin);
+    var cant_ticks_posibles = m_cantTicksPosibles();
+
     var diferencia = fechaFin - fechaInicio;
     diferencia = diferencia / 86400000;
-    if (diferencia > 15)
-        paso = 2;
-    if (diferencia >= 30)
-        paso = 7
-    var tickss = new Array();
+
+    var cant_ticks_actual = diferencia / paso;
+    cant_ticks_actual = +cant_ticks_actual.toFixed();
+    cant_ticks_actual += 1;
+
+    console.info(paso, cant_ticks_actual, cant_ticks_posibles);
+
+    var control = (cant_ticks_actual > cant_ticks_posibles) ? cant_ticks_posibles : cant_ticks_actual;
+
+    var tickss = [];
     var primero = fechaInicio * 1;
     var ultimo = fechaFin * 1;
     var dia = 86400000;
     var iterator = primero;
     tickss.push(primero);
     while (iterator < ultimo) {
+    //while (control > 0) {
         iterator = iterator + dia * paso;
         tickss.push(iterator);
+        control = control - 1;
     }
     return tickss;
+}
 
+//Dev la cant de ticks posibles segun el ancho de la grafica
+function m_cantTicksPosibles() {
+    var width = +d3.select('#' + chart.element.id + " svg .c3-zoom-rect").attr("width");
+    width = +width.toFixed();
+    var dateWidth = 55; // c3-axis c3-axis-x tener estas clases en cuanta para tomar el tamano de la fecha generico
+    var cant_ticks = width / dateWidth;
+    return +cant_ticks.toFixed();
+}
+
+function m_calcularPaso(fechaInicio, fechaFin) {
+    var paso = 1;
+    var diferencia = fechaFin - fechaInicio;
+    diferencia = diferencia / 86400000;
+
+    if (diferencia <= 15)
+        paso = 1;
+    else if (diferencia > 15 && diferencia < 30)
+        paso = 2;
+    else if (diferencia >= 30 && diferencia <= 120) // mas de 1 mes y menos de 4 meses
+        paso = 7;
+    else if (diferencia > 120 && diferencia <= 365) // mas de 5 meses hasta 1 ano
+        paso = 15;
+    else //mas de 1 ano
+        paso = 30;
+    return paso;
 }
