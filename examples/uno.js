@@ -242,13 +242,10 @@ window.addEventListener('resize', function () {
     var z = chart.zoom();
     var ticks = m_generateTicks(z[0], z[1]);
     var ticks2 = m_generateTicks(new Date(datos.columns[0][1]),new Date(datos.columns[0][datos.columns[0].length-1]));
-
-
-    //cambiando los tickValues y dando zoom para el 1er Grafico
+   //cambiando los tickValues y dando zoom para el 1er Grafico
     chart.internal.config.axis_x_tick_values = ticks;
     chart2.internal.config.axis_x_tick_values = ticks;
     chart3.internal.config.axis_x_tick_values = ticks2;
-    console.log(chart.zoom());
 });
 
 //para  mostrar tooltip
