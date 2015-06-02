@@ -713,9 +713,8 @@ function m_updateGrafica(fechaInicio, fechaFin) {
 }
 
 function m_generateTicks(fechaInicio, fechaFin) {
-    var cant_ticks_posibles = m_cantTicksPosibles() - 1; // -1 porque el 1ro siempre se pone
     var paso = m_calcularPaso(fechaInicio, fechaFin);
-
+    var cant_ticks_posibles = m_cantTicksPosibles() - 1; // -1 porque el 1ro siempre se pone
 
     var diferencia = fechaFin - fechaInicio;
     diferencia = diferencia / 86400000;
@@ -779,13 +778,4 @@ function m_calcularPaso(fechaInicio, fechaFin) {
     else //mas de 1 ano
         paso = 30;
     return paso;
-}
-
-function m_calcularPaso2(fechaInicio, fechaFin,ticksPosibles) {
-
-    var paso = 1;
-    var diferencia = fechaFin - fechaInicio;
-    diferencia = diferencia / 86400000;
-    return diferencia/ticksPosibles
-
 }
