@@ -23,19 +23,20 @@ var StockTools = function (raiz, periodos) {
         // Crea el contenedor de los intervalos (input para las fechas)
         var intervalos = header.append("div")
             .attr('class', 'c3-intervalos-contenedor')
-            .append("ul")
-            .attr('class', '');
+            .append("ul");
 
         var li = intervalos.append("li");
 
-        li.append("a").attr('href', '#').text("Fechas");
+        li.append("a").attr('href', '#').text(i18n.t('date_range'));
         var divFechas = li.append('ul').append('li').append('div').attr("class", 'form-intervalos-fechas');
 
         var inicio = divFechas.append("div").attr('class', 'divFechas');
         inicio.html('<span>' + i18n.t("from") + ':</span><input type="text" name="inicio" id="inicio" value="' + datos.columns[0][1] + '">');
+        inicio.select("input").on("keypress", self.e_input_enter);
 
         var fin = divFechas.append("div").attr('class', 'divFechas');
         fin.html('<span>' + i18n.t("to") + ':</span><input type="text" name="fin" id="fin" value="' + datos.columns[0][datos.columns[0].length - 1] + '">');
+        fin.select("input").on("keypress", self.e_input_enter);
 
         var botonActualizar = divFechas.append("div").attr('class', 'btn-Actualizar-contenedor');
         botonActualizar.html('<input id="btn-actualizar" type="button" value="OK">');
@@ -48,7 +49,7 @@ var StockTools = function (raiz, periodos) {
             .append("ul")
             .attr('class', 'c3-botones');
 
-        botonActualizar.select("input").on('click', self.e_update_click);
+        botonActualizar.select("input").on('click', self.m_update);
 
         // Boton Actualizar
         //botones.append("li")
@@ -246,6 +247,20 @@ var StockTools = function (raiz, periodos) {
             throw new Error("No hay datos para este intervalo");
     }
 
+
+    self.m_update = function () {
+        if (self.m_fecha_correcta(document.getElementById("inicio").value) && self.m_fecha_correcta(document.getElementById("fin").value)) {
+            self.e_update_click();
+        }
+    }
+
+    self.e_input_enter = function () {
+        if (d3.event.keyCode == 13) {
+            self.m_update();
+        }
+        return false;
+    }
+
     //return la pos donde se encuentra esta fecha en los datos originales
     self.m_buscarFecha = function (fecha) {
         return datos.columns[0].indexOf(fecha);
@@ -333,8 +348,22 @@ var StockTools = function (raiz, periodos) {
             throw new Error("Intervalo incorrecto");
     }
 
+    //Comprueba que la fecha sea correcta
+
+    self.m_fecha_correcta = function (fecha) {
+        return isValidDate(fecha);
+        function isValidDate(str) {
+            var parms = str.split('-');
+            var yyyy = parseInt(parms[0], 10);
+            var mm = parseInt(parms[1], 10);
+            var dd = parseInt(parms[2], 10);
+            var date = new Date(yyyy, mm - 1, dd, 0, 0, 0, 0);
+            return mm === (date.getMonth() + 1) && dd === date.getDate() && yyyy === date.getFullYear();
+        }
+    }
     //Crea los componentes y sus eventos
     init();
+
 };
 
 //Dev true si las fechas estan en el intervalo de los datos
@@ -345,10 +374,7 @@ function m_intervalo_Correcto(fechaInicio, fechaFin) {
     var inicioDatos = parseDate(datos.columns[0][1]);
     var finDatos = parseDate(datos.columns[0][posLastDate]);
     fechaFin || (fechaFin = finDatos);
-    //console.info(fechaInicio, fechaFin);
-    //console.info(inicioDatos, finDatos);
-
-    return fechaInicio >= inicioDatos && fechaFin <= finDatos;
+    return fechaFin > fechaInicio && fechaInicio >= inicioDatos && fechaFin <= finDatos;
 }
 
 //Metodo auxiliar hacer algunas y luego actualizar
@@ -359,12 +385,16 @@ function m_aux_Update(obj_stock, fechaInicio, fechaFin) {
 }
 
 function m_updateGrafica(fechaInicio, fechaFin) {
+
     var dominio = [fechaInicio, fechaFin];
+
     //calculando los tickValues para el rango actual
-    var ticks = m_generateTicks(fechaInicio,fechaFin);
+    var ticks = m_generateTicks(fechaInicio, fechaFin);
+
     //cambiando los tickValues y dando zoom para el 1er Grafico
     chart.internal.config.axis_x_tick_values = ticks;
     chart.zoom(dominio);
+
     //cambiando los tickValues y dando zoom para el 2do Grafico
     chart2.internal.config.axis_x_tick_values = ticks;
     chart2.zoom(dominio);
@@ -372,24 +402,70 @@ function m_updateGrafica(fechaInicio, fechaFin) {
     chart3.internal.brush.extent(dominio).update();
 }
 
-function m_generateTicks(fechaInicio,fechaFin){
-    var paso = 1;
+function m_generateTicks(fechaInicio, fechaFin) {
+    var paso = m_calcularPaso(fechaInicio, fechaFin);
+    var cant_ticks_posibles = m_cantTicksPosibles() - 1; // -1 porque el 1ro siempre se pone
+
     var diferencia = fechaFin - fechaInicio;
     diferencia = diferencia / 86400000;
-    if(diferencia>15)
-        paso = 2;
-    if(diferencia>=30)
-        paso = 7
-    var tickss = new Array();
-    var primero = fechaInicio*1;
-    var ultimo = fechaFin*1;
+
+    var cant_ticks_actual = diferencia / paso;
+    cant_ticks_actual = +cant_ticks_actual.toFixed();
+    cant_ticks_actual += 1;
+
+    //Recalculando el PASO
+    var cant_dias = 1;
+    var control = cant_ticks_actual;
+    if (cant_ticks_actual > cant_ticks_posibles) { // si no hay espacio para los actuales
+        control = cant_ticks_posibles;
+        cant_dias = diferencia / cant_ticks_posibles;
+        cant_dias = +cant_dias.toFixed();
+        paso = cant_dias;
+    }
+
+    //console.info(paso, cant_ticks_actual, cant_ticks_posibles, cant_dias);
+
+    var tickss = [];
+    var primero = fechaInicio * 1;
+    var ultimo = fechaFin * 1;
     var dia = 86400000;
     var iterator = primero;
     tickss.push(primero);
-    while (iterator < ultimo) {
-        iterator =iterator+ dia*paso;
+    //while (iterator < ultimo) {
+    while (control > 0) {
+        iterator = iterator + dia * paso;
         tickss.push(iterator);
+        control = control - 1;
     }
     return tickss;
+}
 
+//Dev la cant de ticks posibles segun el ancho de la grafica
+function m_cantTicksPosibles() {
+    var width = +d3.select('#' + chart.element.id + " svg .c3-zoom-rect").attr("width");
+    width = +width.toFixed();
+
+    var dateWidth = 85; // 85 es aproximadamente por exceso el ancho que toma una fecha
+    // c3-axis c3-axis-x tener estas clases en cuanta para tomar el tamano de la fecha generico
+
+    var cant_ticks = width / dateWidth;
+    return +cant_ticks.toFixed();
+}
+
+function m_calcularPaso(fechaInicio, fechaFin) {
+    var paso = 1;
+    var diferencia = fechaFin - fechaInicio;
+    diferencia = diferencia / 86400000;
+
+    if (diferencia < 15)
+        paso = 1;
+    else if (diferencia > 15 && diferencia < 31)
+        paso = 2;
+    else if (diferencia > 30 && diferencia <= 120) // mas de 1 mes y menos de 4 meses
+        paso = 7;
+    else if (diferencia > 120 && diferencia <= 365) // mas de 5 meses hasta 1 ano
+        paso = 15;
+    else //mas de 1 ano
+        paso = 30;
+    return paso;
 }

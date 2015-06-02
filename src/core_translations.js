@@ -7,8 +7,7 @@ i18n.extend({
   "from": "From",
   "to": "To",
   "cmp": "Compare with",
-
-
+  "date_range": "Date Range",
 });
 
 if (i18n.locale() == "es") i18n.extend({
@@ -16,4 +15,6 @@ if (i18n.locale() == "es") i18n.extend({
   "from": "Desde",
   "to": "Hasta",
    "cmp": "Comparar con",
+   "date_range": "Rango de Fechas",
+
 });

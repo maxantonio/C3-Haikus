@@ -15,7 +15,7 @@
 </head>
 <body>
 <div class="text-center col-md-12" style=" width: 95%">
-    <h1>Grafica de precios n1</h1>
+    <h1>Gr&aacute;fica Financiera</h1>
 
     <div id="chart-header"></div>
     <div id="chart"></div>
@@ -26,35 +26,35 @@
 <script>
     var locale = "es";
     var formato = '%Y-%m-%d';
-    var total_datos = 150;
+    var total_datos = 200;
 
     //Periodos
     var periodos = [
         {
-            texto: "1D",
+            texto: "1d",
             cantidad: 1,
             tipo: "dia",
             seleccionado: false
         }, {
-            texto: "2D",
-            cantidad: 2,
-            tipo: "dia",
-            seleccionado: true
-        }, {
-            texto: "4D",
-            cantidad: 4,
+            texto: "10d",
+            cantidad: 10,
             tipo: "dia",
             seleccionado: false
+        }, {
+            texto: "1m",
+            cantidad: 1,
+            tipo: "mes",
+            seleccionado: true
         },
         {
-            texto: "1M",
-            cantidad: 1,
+            texto: "3m",
+            cantidad: 3,
             tipo: "mes",
             seleccionado: false
         },
         {
-            texto: "2M",
-            cantidad: 2,
+            texto: "6m",
+            cantidad: 6,
             tipo: "mes",
             seleccionado: false
         },
@@ -65,25 +65,25 @@
             seleccionado: false
         },
         {
-            texto: "1Y",
+            texto: "1y",
             cantidad: 1,
             tipo: "anno",
             seleccionado: false
         },
         {
-            texto: "2Y",
+            texto: "2y",
             cantidad: 2,
             tipo: "anno",
             seleccionado: false
         },
         {
-            texto: "5Y",
+            texto: "5y",
             cantidad: 5,
             tipo: "anno",
             seleccionado: false
         },
         {
-            texto: "10Y",
+            texto: "10y",
             cantidad: 10,
             tipo: "anno",
             seleccionado: false

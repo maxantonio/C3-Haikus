@@ -46,11 +46,11 @@ datos_volumen.onmouseover = function (d) {
     showTooltip(0, d3.event, d)
 }
 
-var charts = new Array();//contenedor de graficos para usar en showTooltip
+var charts = [];//contenedor de graficos para usar en showTooltip
 var chart2 = c3.generate({
     bindto: '#chart2',
     bar:{
-        width:10
+        width:5
     },
     data: datos_volumen,
     size: {
@@ -175,7 +175,6 @@ chart2.tooltip.show = function (args) {
     ds.dispatchEvent('mousemove', index, mouse);
 }
 
-
 var chart = c3.generate({
     data: datos,
     axis: {
@@ -220,9 +219,6 @@ var chart = c3.generate({
         chart2.tooltip.hide();
     }
 });
-
-
-
 charts.push(chart);
 charts.push(chart2);
 charts.push(chart3);
