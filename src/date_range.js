@@ -404,7 +404,7 @@ function m_updateGrafica(fechaInicio, fechaFin) {
 
 function m_generateTicks(fechaInicio, fechaFin) {
     var paso = m_calcularPaso(fechaInicio, fechaFin);
-    var cant_ticks_posibles = m_cantTicksPosibles();
+    var cant_ticks_posibles = m_cantTicksPosibles() - 1; // -1 porque el 1ro siempre se pone
 
     var diferencia = fechaFin - fechaInicio;
     diferencia = diferencia / 86400000;
@@ -413,9 +413,17 @@ function m_generateTicks(fechaInicio, fechaFin) {
     cant_ticks_actual = +cant_ticks_actual.toFixed();
     cant_ticks_actual += 1;
 
-    console.info(paso, cant_ticks_actual, cant_ticks_posibles);
+    //Recalculando el PASO
+    var cant_dias = 1;
+    var control = cant_ticks_actual;
+    if (cant_ticks_actual > cant_ticks_posibles) { // si no hay espacio para los actuales
+        control = cant_ticks_posibles;
+        cant_dias = diferencia / cant_ticks_posibles;
+        cant_dias = +cant_dias.toFixed();
+        paso = cant_dias;
+    }
 
-    var control = (cant_ticks_actual > cant_ticks_posibles) ? cant_ticks_posibles : cant_ticks_actual;
+    //console.info(paso, cant_ticks_actual, cant_ticks_posibles, cant_dias);
 
     var tickss = [];
     var primero = fechaInicio * 1;
@@ -423,8 +431,8 @@ function m_generateTicks(fechaInicio, fechaFin) {
     var dia = 86400000;
     var iterator = primero;
     tickss.push(primero);
-    while (iterator < ultimo) {
-    //while (control > 0) {
+    //while (iterator < ultimo) {
+    while (control > 0) {
         iterator = iterator + dia * paso;
         tickss.push(iterator);
         control = control - 1;
@@ -436,7 +444,10 @@ function m_generateTicks(fechaInicio, fechaFin) {
 function m_cantTicksPosibles() {
     var width = +d3.select('#' + chart.element.id + " svg .c3-zoom-rect").attr("width");
     width = +width.toFixed();
-    var dateWidth = 55; // c3-axis c3-axis-x tener estas clases en cuanta para tomar el tamano de la fecha generico
+
+    var dateWidth = 85; // 85 es aproximadamente por exceso el ancho que toma una fecha
+    // c3-axis c3-axis-x tener estas clases en cuanta para tomar el tamano de la fecha generico
+
     var cant_ticks = width / dateWidth;
     return +cant_ticks.toFixed();
 }
@@ -446,11 +457,11 @@ function m_calcularPaso(fechaInicio, fechaFin) {
     var diferencia = fechaFin - fechaInicio;
     diferencia = diferencia / 86400000;
 
-    if (diferencia <= 15)
+    if (diferencia < 15)
         paso = 1;
-    else if (diferencia > 15 && diferencia < 30)
+    else if (diferencia > 15 && diferencia < 31)
         paso = 2;
-    else if (diferencia >= 30 && diferencia <= 120) // mas de 1 mes y menos de 4 meses
+    else if (diferencia > 30 && diferencia <= 120) // mas de 1 mes y menos de 4 meses
         paso = 7;
     else if (diferencia > 120 && diferencia <= 365) // mas de 5 meses hasta 1 ano
         paso = 15;
