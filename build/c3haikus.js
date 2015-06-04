@@ -298,6 +298,7 @@ i18n.extend({
   "to": "To",
   "cmp": "Compare with",
   "date_range": "Date Range",
+  "export": "Export to",
 });
 
 if (i18n.locale() == "es") i18n.extend({
@@ -306,7 +307,7 @@ if (i18n.locale() == "es") i18n.extend({
   "to": "Hasta",
    "cmp": "Comparar con",
    "date_range": "Rango de Fechas",
-
+   "export": "Exportar a",
 });
 ;//actual simbolo que se esta comparando
 var current_selected_value = "";
@@ -360,14 +361,6 @@ var StockTools = function (raiz, periodos) {
             .attr('class', 'c3-botones');
 
         botonActualizar.select("input").on('click', self.m_update);
-
-        // Boton Actualizar
-        //botones.append("li")
-        //    .attr("id", "update")
-        //    .on('click', self.e_update_click)
-        //    .append("a")
-        //    .attr('href', '#')
-        //    .text("Actualizar");
 
         // Botones para comparar
         datos.columns.forEach(function (d, i) {
@@ -425,6 +418,28 @@ var StockTools = function (raiz, periodos) {
             .text(function (d) {
                 return d.texto;
             });
+
+        var formatos = [i18n.t("export"), 'png', 'jpeg', 'bmp'];
+
+        var select_export = botones.append("select")
+            .attr("class", "c3_export");
+
+        select_export.selectAll("opciones")
+            .data(formatos)
+            .enter()
+            .append("option")
+            .attr('class', 'export_options')
+            .attr('data-id', function (d) {
+                return d;
+            })
+            .attr('value', function (d) {
+                return d;
+            })
+            .text(function (d) {
+                return d;
+            });
+
+        select_export.on("change", self.e_exportar_click);
 
         //Estableciendo la fecha inicial acorde con el periodo seleccionado
         self.m_establecer_fecha_inicial();
@@ -658,8 +673,28 @@ var StockTools = function (raiz, periodos) {
             throw new Error("Intervalo incorrecto");
     }
 
-    //Comprueba que la fecha sea correcta
+    //Click para exportar
+    self.e_exportar_click = function () {
+        var export_format = this.options[this.selectedIndex].value;
+        html2canvas(document.getElementById('my-c3-chart'), {
+            onrendered: function (canvas) {
 
+                var MIME_TYPE = "image/" + export_format;
+                var imgURL = canvas.toDataURL(MIME_TYPE);
+                var dlLink = document.createElement('a');
+                dlLink.download = "chart." + export_format;
+                dlLink.href = imgURL;
+                dlLink.dataset.downloadurl = [MIME_TYPE, dlLink.download, dlLink.href].join(':');
+
+                document.body.appendChild(dlLink);
+                console.info(dlLink);
+                dlLink.click();
+                document.body.removeChild(dlLink);
+            }
+        });
+    };
+
+    //Comprueba que la fecha sea correcta
     self.m_fecha_correcta = function (fecha) {
         return isValidDate(fecha);
         function isValidDate(str) {
@@ -671,6 +706,7 @@ var StockTools = function (raiz, periodos) {
             return mm === (date.getMonth() + 1) && dd === date.getDate() && yyyy === date.getFullYear();
         }
     }
+
     //Crea los componentes y sus eventos
     init();
 
