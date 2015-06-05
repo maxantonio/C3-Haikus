@@ -298,6 +298,7 @@ i18n.extend({
   "to": "To",
   "cmp": "Compare with",
   "date_range": "Date Range",
+  "export": "Export to",
 });
 
 if (i18n.locale() == "es") i18n.extend({
@@ -306,7 +307,7 @@ if (i18n.locale() == "es") i18n.extend({
   "to": "Hasta",
    "cmp": "Comparar con",
    "date_range": "Rango de Fechas",
-
+   "export": "Exportar a",
 });
 ;//actual simbolo que se esta comparando
 var current_selected_value = "";
@@ -360,14 +361,6 @@ var StockTools = function (raiz, periodos) {
             .attr('class', 'c3-botones');
 
         botonActualizar.select("input").on('click', self.m_update);
-
-        // Boton Actualizar
-        //botones.append("li")
-        //    .attr("id", "update")
-        //    .on('click', self.e_update_click)
-        //    .append("a")
-        //    .attr('href', '#')
-        //    .text("Actualizar");
 
         // Botones para comparar
         datos.columns.forEach(function (d, i) {
@@ -425,6 +418,28 @@ var StockTools = function (raiz, periodos) {
             .text(function (d) {
                 return d.texto;
             });
+
+        var formatos = [i18n.t("export"), 'png', 'jpeg', 'bmp'];
+
+        var select_export = botones.append("select")
+            .attr("class", "c3_export");
+
+        select_export.selectAll("opciones")
+            .data(formatos)
+            .enter()
+            .append("option")
+            .attr('class', 'export_options')
+            .attr('data-id', function (d) {
+                return d;
+            })
+            .attr('value', function (d) {
+                return d;
+            })
+            .text(function (d) {
+                return d;
+            });
+
+        select_export.on("change", self.e_exportar_click);
 
         //Estableciendo la fecha inicial acorde con el periodo seleccionado
         self.m_establecer_fecha_inicial();
@@ -658,8 +673,46 @@ var StockTools = function (raiz, periodos) {
             throw new Error("Intervalo incorrecto");
     }
 
-    //Comprueba que la fecha sea correcta
+    //Click para exportar
+    self.e_exportar_click = function () {
+        var export_format = this.options[this.selectedIndex].value;
 
+        if(export_format==i18n.t("export"))
+            return;
+        //arreglando propiedades que no funcionan en canvas
+       d3.selectAll('.c3 path').attr('fill','transparent').attr('stroke','#000000');
+       d3.selectAll('.tick line').attr('stroke','#000000');
+       d3.selectAll('line.c3-xgrid').attr('stroke','#aaaaaa').attr('stroke-dasharray','3 3');
+       d3.selectAll('line.c3-ygrid').attr('stroke','#aaaaaa').attr('stroke-dasharray','3 3');
+       d3.selectAll('.c3-axis-x .tick text').attr('transform','translate(0,10)');
+       d3.selectAll('.extent').attr('fill-opacity','0.1');
+       d3.selectAll('.c3-chart').each(function(){
+           var str = d3.select(this).attr('clip-path');
+           var strquitar = str.substring(4, str.indexOf('#'));
+           d3.select(this).attr('clip-path',str.replace(strquitar,''));
+       });
+
+        html2canvas(document.getElementById('my-c3-chart'), {
+            onrendered: function (canvas) {
+
+                var MIME_TYPE = "image/" + export_format;
+                var imgURL = canvas.toDataURL(MIME_TYPE);
+                var dlLink = document.createElement('a');
+                dlLink.download = "chart." + export_format;
+                dlLink.href = imgURL;
+                dlLink.dataset.downloadurl = [MIME_TYPE, dlLink.download, dlLink.href].join(':');
+
+                document.body.appendChild(dlLink);
+                console.info(dlLink);
+                dlLink.click();
+                document.body.removeChild(dlLink);
+            }
+        });
+        //restaurando posicion de los textos
+        d3.selectAll('.c3-axis-x .tick text').attr('transform','translate(0,0)');
+    };
+
+    //Comprueba que la fecha sea correcta
     self.m_fecha_correcta = function (fecha) {
         return isValidDate(fecha);
         function isValidDate(str) {
@@ -671,6 +724,7 @@ var StockTools = function (raiz, periodos) {
             return mm === (date.getMonth() + 1) && dd === date.getDate() && yyyy === date.getFullYear();
         }
     }
+
     //Crea los componentes y sus eventos
     init();
 
@@ -752,7 +806,7 @@ function m_generateTicks(fechaInicio, fechaFin) {
 
 //Dev la cant de ticks posibles segun el ancho de la grafica
 function m_cantTicksPosibles() {
-    var width = +d3.select('#' + chart.element.id + " svg .c3-zoom-rect").attr("width");
+    var width = +d3.select('#' + chart2.element.id + " svg .c3-zoom-rect").attr("width");
     width = +width.toFixed();
 
     var dateWidth = 85; // 85 es aproximadamente por exceso el ancho que toma una fecha
