@@ -180,6 +180,7 @@ var chart = c3.generate({
     axis: {
         x: {
             type: 'timeseries',
+
             tick: {
                 format: formato
             }
@@ -234,20 +235,20 @@ var svg3 = shchart3.select('svg');
 var gs = svg3.select('g');
 var gsubchart = svg3.select('.subchart_haikus');
 gs.style('display', 'none');
-gsubchart.attr("transform", 'translate(50.5,0.5)');
-
 //reajustando posicion cuando se redimenciona la ventana
-window.addEventListener('resize', function () {
-    gsubchart.attr("transform", 'translate(50.5,0.5)');
+window.addEventListener('resize',win_resize);
+function win_resize() {
     var z = chart.zoom();
     var ticks = m_generateTicks(z[0], z[1]);
     var ticks2 = m_generateTicks(new Date(datos.columns[0][1]),new Date(datos.columns[0][datos.columns[0].length-1]));
-   //cambiando los tickValues y dando zoom para el 1er Grafico
+    //cambiando los tickValues y dando zoom para el 1er Grafico
     chart.internal.config.axis_x_tick_values = ticks;
     chart2.internal.config.axis_x_tick_values = ticks;
     chart3.internal.config.axis_x_tick_values = ticks2;
-});
+    chart3.internal.redraw();
+    gsubchart.attr("transform", 'translate(50.5,0.5)');
 
+}
 //para  mostrar tooltip
 function showTooltip(indexChart, event, d) {
     //console.log(charts[indexChart])
@@ -264,3 +265,4 @@ function mostrar_periodo_seleccionado() {
 }
 
 mostrar_periodo_seleccionado();
+win_resize();

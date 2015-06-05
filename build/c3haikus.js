@@ -762,8 +762,8 @@ function m_updateGrafica(fechaInicio, fechaFin) {
     //cambiando los tickValues y dando zoom para el 2do Grafico
     chart2.internal.config.axis_x_tick_values = ticks;
     chart2.zoom(dominio);
-
     chart3.internal.brush.extent(dominio).update();
+
 }
 
 function m_generateTicks(fechaInicio, fechaFin) {
