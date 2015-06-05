@@ -677,13 +677,20 @@ var StockTools = function (raiz, periodos) {
     self.e_exportar_click = function () {
         var export_format = this.options[this.selectedIndex].value;
 
-        //probando setear fills a transparente
+        if(export_format==i18n.t("export"))
+            return;
+        //arreglando propiedades que no funcionan en canvas
        d3.selectAll('.c3 path').attr('fill','transparent').attr('stroke','#000000');
        d3.selectAll('.tick line').attr('stroke','#000000');
        d3.selectAll('line.c3-xgrid').attr('stroke','#aaaaaa').attr('stroke-dasharray','3 3');
-        d3.selectAll('line.c3-ygrid').attr('stroke','#aaaaaa').attr('stroke-dasharray','3 3');
-        d3.selectAll('.tick text').attr('transform','translate(0,10)');
+       d3.selectAll('line.c3-ygrid').attr('stroke','#aaaaaa').attr('stroke-dasharray','3 3');
+       d3.selectAll('.c3-axis-x .tick text').attr('transform','translate(0,10)');
        d3.selectAll('.extent').attr('fill-opacity','0.1');
+       d3.selectAll('.c3-chart').each(function(){
+           var str = d3.select(this).attr('clip-path');
+           var strquitar = str.substring(4, str.indexOf('#'));
+           d3.select(this).attr('clip-path',str.replace(strquitar,''));
+       });
 
         html2canvas(document.getElementById('my-c3-chart'), {
             onrendered: function (canvas) {
@@ -701,6 +708,8 @@ var StockTools = function (raiz, periodos) {
                 document.body.removeChild(dlLink);
             }
         });
+        //restaurando posicion de los textos
+        d3.selectAll('.c3-axis-x .tick text').attr('transform','translate(0,0)');
     };
 
     //Comprueba que la fecha sea correcta
