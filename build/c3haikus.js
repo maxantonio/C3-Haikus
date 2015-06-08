@@ -338,7 +338,7 @@ var StockTools = function (raiz, periodos) {
 
         var li = intervalos.append("li");
 
-        li.append("a").attr('href', '#').text(i18n.t('date_range'));
+        li.append("a").attr('href', '#').html('<span class="icon-calendar"></span>');
         var divFechas = li.append('ul').append('li').append('div').attr("class", 'form-intervalos-fechas');
 
         var inicio = divFechas.append("div").attr('class', 'divFechas');
@@ -680,17 +680,17 @@ var StockTools = function (raiz, periodos) {
         if(export_format==i18n.t("export"))
             return;
         //arreglando propiedades que no funcionan en canvas
-       d3.selectAll('.c3 path').attr('fill','transparent').attr('stroke','#000000');
-       d3.selectAll('.tick line').attr('stroke','#000000');
-       d3.selectAll('line.c3-xgrid').attr('stroke','#aaaaaa').attr('stroke-dasharray','3 3');
-       d3.selectAll('line.c3-ygrid').attr('stroke','#aaaaaa').attr('stroke-dasharray','3 3');
-       d3.selectAll('.c3-axis-x .tick text').attr('transform','translate(0,10)');
-       d3.selectAll('.extent').attr('fill-opacity','0.1');
-       d3.selectAll('.c3-chart').each(function(){
-           var str = d3.select(this).attr('clip-path');
-           var strquitar = str.substring(4, str.indexOf('#'));
-           d3.select(this).attr('clip-path',str.replace(strquitar,''));
-       });
+        d3.selectAll('.c3 path').attr('fill','transparent').attr('stroke','#000000');
+        d3.selectAll('.tick line').attr('stroke','#000000');
+        d3.selectAll('line.c3-xgrid').attr('stroke','#aaaaaa').attr('stroke-dasharray','3 3');
+        d3.selectAll('line.c3-ygrid').attr('stroke','#aaaaaa').attr('stroke-dasharray','3 3');
+        d3.selectAll('.c3-axis-x .tick text').attr('transform','translate(0,10)');
+        d3.selectAll('.extent').attr('fill-opacity','0.1');
+        d3.selectAll('.c3-chart').each(function(){
+            var str = d3.select(this).attr('clip-path');
+            var strquitar = str.substring(4, str.indexOf('#'));
+            d3.select(this).attr('clip-path',str.replace(strquitar,''));
+        });
 
         html2canvas(document.getElementById('my-c3-chart'), {
             onrendered: function (canvas) {
@@ -711,6 +711,7 @@ var StockTools = function (raiz, periodos) {
         //restaurando posicion de los textos
         d3.selectAll('.c3-axis-x .tick text').attr('transform','translate(0,0)');
     };
+
 
     //Comprueba que la fecha sea correcta
     self.m_fecha_correcta = function (fecha) {
@@ -762,8 +763,8 @@ function m_updateGrafica(fechaInicio, fechaFin) {
     //cambiando los tickValues y dando zoom para el 2do Grafico
     chart2.internal.config.axis_x_tick_values = ticks;
     chart2.zoom(dominio);
-    chart3.internal.brush.extent(dominio).update();
 
+    chart3.internal.brush.extent(dominio).update();
 }
 
 function m_generateTicks(fechaInicio, fechaFin) {
@@ -806,7 +807,7 @@ function m_generateTicks(fechaInicio, fechaFin) {
 
 //Dev la cant de ticks posibles segun el ancho de la grafica
 function m_cantTicksPosibles() {
-    var width = +d3.select('#' + chart2.element.id + " svg .c3-zoom-rect").attr("width");
+    var width = +d3.select('#' + chart.element.id + " svg .c3-zoom-rect").attr("width");
     width = +width.toFixed();
 
     var dateWidth = 85; // 85 es aproximadamente por exceso el ancho que toma una fecha

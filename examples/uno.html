@@ -1,7 +1,9 @@
 <html lang="es">
 <head>
-    <link rel="stylesheet" type="text/css" href="vendor/c3.css">
-    <link rel="stylesheet" type="text/css" href="vendor/ajustes_c3.css">
+    <link rel="stylesheet" type="text/css" href="vendor/css/c3.css">
+    <link rel="stylesheet" type="text/css" href="vendor/css/ajustes_c3.css">
+    <link rel="stylesheet" type="text/css" href="vendor/css/iconos.css">
+
     <meta charset="utf-8">
 
     <!-- Latest compiled and minified CSS -->
@@ -26,7 +28,7 @@
 <script>
     var locale = "es";
     var formato = '%Y-%m-%d';
-    var total_datos = 200;
+    var total_datos = 50;
 
     //Periodos
     var periodos = [
@@ -36,8 +38,8 @@
             tipo: "dia",
             seleccionado: false
         }, {
-            texto: "10d",
-            cantidad: 10,
+            texto: "5d",
+            cantidad: 5,
             tipo: "dia",
             seleccionado: false
         }, {
@@ -79,12 +81,6 @@
         {
             texto: "5y",
             cantidad: 5,
-            tipo: "anno",
-            seleccionado: false
-        },
-        {
-            texto: "10y",
-            cantidad: 10,
             tipo: "anno",
             seleccionado: false
         }

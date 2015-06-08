@@ -27,7 +27,7 @@ var StockTools = function (raiz, periodos) {
 
         var li = intervalos.append("li");
 
-        li.append("a").attr('href', '#').text(i18n.t('date_range'));
+        li.append("a").attr('href', '#').html('<span class="icon-calendar"></span>');
         var divFechas = li.append('ul').append('li').append('div').attr("class", 'form-intervalos-fechas');
 
         var inicio = divFechas.append("div").attr('class', 'divFechas');
