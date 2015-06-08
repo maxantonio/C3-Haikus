@@ -53,6 +53,9 @@ var chart2 = c3.generate({
         width:5
     },
     data: datos_volumen,
+    padding:{
+        left:50
+    },
     size: {
         height: 100
     },
@@ -263,6 +266,5 @@ function mostrar_periodo_seleccionado() {
     var fechaFin = parseDate(document.getElementById("fin").value);
     m_updateGrafica(fechaInicio, fechaFin);
 }
-
-mostrar_periodo_seleccionado();
 win_resize();
+mostrar_periodo_seleccionado();
