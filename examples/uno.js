@@ -49,10 +49,13 @@ datos_volumen.onmouseover = function (d) {
 var charts = [];//contenedor de graficos para usar en showTooltip
 var chart2 = c3.generate({
     bindto: '#chart2',
-    bar: {
-        width: 5
+    bar:{
+        width:5
     },
     data: datos_volumen,
+    padding:{
+        left:50
+    },
     size: {
         height: 100
     },
@@ -236,11 +239,11 @@ var gs = svg3.select('g');
 var gsubchart = svg3.select('.subchart_haikus');
 gs.style('display', 'none');
 //reajustando posicion cuando se redimenciona la ventana
-window.addEventListener('resize', win_resize);
+window.addEventListener('resize',win_resize);
 function win_resize() {
     var z = chart.zoom();
     var ticks = m_generateTicks(z[0], z[1]);
-    var ticks2 = m_generateTicks(new Date(datos.columns[0][1]), new Date(datos.columns[0][datos.columns[0].length - 1]));
+    var ticks2 = m_generateTicks(new Date(datos.columns[0][1]),new Date(datos.columns[0][datos.columns[0].length-1]));
     //cambiando los tickValues y dando zoom para el 1er Grafico
     chart.internal.config.axis_x_tick_values = ticks;
     chart2.internal.config.axis_x_tick_values = ticks;
@@ -263,6 +266,5 @@ function mostrar_periodo_seleccionado() {
     var fechaFin = parseDate(document.getElementById("fin").value);
     m_updateGrafica(fechaInicio, fechaFin);
 }
-
 win_resize();
 mostrar_periodo_seleccionado();
