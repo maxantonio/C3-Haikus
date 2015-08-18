@@ -5,7 +5,7 @@
     <link rel="stylesheet" type="text/css" href="vendor/css/iconos.css">
 
     <meta charset="utf-8">
-
+    <script src="https://cdn.firebase.com/js/client/2.2.8/firebase.js"></script>
     <!-- Latest compiled and minified CSS -->
     <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">-->
 
@@ -106,6 +106,7 @@
         columns: [],
         type: 'area' // especifica que es de area
     };
+
 </script>
 
 <script src="vendor/d3.v3.min.js" charset="utf-8"></script>
@@ -113,7 +114,50 @@
 <script src="../build/c3haikus.js"></script>
 <!--<script src="../build/c3haikus.min.js"></script>-->
 <script src="uno.js"></script>
+
 <script src="html2canvas.js"></script>
 <script src="html2canvas.svg.js"></script>
+<script >
+    var results = [];
+    console.log("funciona");
+    var myFirebaseRef = new Firebase("https://yoi2.firebaseio.com/");
+    console.log(myFirebaseRef);
+    myFirebaseRef.child("precios_intradia/MAXCOMCPO/Historico").on("value", function(snapshot) {
+        console.log(snapshot.val())
+        results = snapshot.val();
+        var fechas = ["x"];
+        var maxcom = ["MAXCOM"];
+        var ipc = ["IPC"];
+        var yahoo = ["YAHOO"];
+        var volume_maxcom = ["MAXCOM"];
+        for(var i=0;i<results.length;i++){
+            fechas.splice(1,0,results[i].date)
+            maxcom.splice(1,0,results[i].price)
+            ipc.splice(1,0,results[i].price)
+            yahoo.splice(1,0,results[i].price)
+            volume_maxcom.splice(1,0,results[i].volume)
+        }
+        datos.columns = [fechas, maxcom, ipc, yahoo];
+        datos_volumen.columns = [fechas, volume_maxcom];
+        datos_area.columns = [fechas, maxcom];
+
+        datos.onmouseover = function (d) {
+            showTooltip(1, d3.event, d)
+        }
+
+        //Cuando se mueve el mouse por la grafica de volumen
+        datos_volumen.onmouseover = function (d) {
+            showTooltip(0, d3.event, d)
+        }
+        //var data2 = datos_aleatorios(10);
+        //console.log(data2);
+          // Alerts "San Francisco"
+        InitData();
+        win_resize();
+        mostrar_periodo_seleccionado();
+        console.log("SETEADO");
+
+    });
+</script>
 </body>
 </html>

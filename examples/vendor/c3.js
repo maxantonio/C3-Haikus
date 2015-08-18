@@ -2026,7 +2026,11 @@
                     new_rows[j - 1] = {};
                 }
                 if (isUndefined(columns[i][j])) {
+                    console.log(i+"***"+j);
+                    console.log(columns);
+                   console.log(columns[i][j])
                     throw new Error("Source data is missing a component at (" + i + "," + j + ")!");
+
                 }
                 new_rows[j - 1][key] = columns[i][j];
             }
@@ -2675,6 +2679,7 @@
     c3_chart_internal_fn.getShapeIndices = function (typeFilter) {
         var $$ = this, config = $$.config,
             indices = {}, i = 0, j, k;
+
         $$.filterTargetsToShow($$.data.targets.filter(typeFilter, $$)).forEach(function (d) {
             for (j = 0; j < config.data_groups.length; j++) {
                 if (config.data_groups[j].indexOf(d.id) < 0) { continue; }
@@ -6606,14 +6611,10 @@
         }
     };
     c3_chart_fn.axis.range = function (range) {
-        console.log("llamando al range");
-        console.log(range);
         if (arguments.length) {
-            console.log("entro");
             if (isDefined(range.max)) { this.axis.max(range.max); }
             if (isDefined(range.min)) { this.axis.min(range.min); }
         } else {
-            console.log("se fue mal");
             return {
                 max: this.axis.max(),
                 min: this.axis.min()

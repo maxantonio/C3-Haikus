@@ -496,7 +496,7 @@ function m_generateTicks(fechaInicio, fechaFin) {
 
 //Dev la cant de ticks posibles segun el ancho de la grafica
 function m_cantTicksPosibles() {
-    var width = +d3.select('#' + chart.element.id + " svg .c3-zoom-rect").attr("width");
+    var width = +d3.select('#' + charts[0].element.id + " svg .c3-zoom-rect").attr("width");
     width = +width.toFixed();
 
     var dateWidth = 85; // 85 es aproximadamente por exceso el ancho que toma una fecha

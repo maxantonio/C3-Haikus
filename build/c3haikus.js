@@ -703,7 +703,6 @@ var StockTools = function (raiz, periodos) {
                 dlLink.dataset.downloadurl = [MIME_TYPE, dlLink.download, dlLink.href].join(':');
 
                 document.body.appendChild(dlLink);
-                console.info(dlLink);
                 dlLink.click();
                 document.body.removeChild(dlLink);
             }
@@ -757,14 +756,14 @@ function m_updateGrafica(fechaInicio, fechaFin) {
     var ticks = m_generateTicks(fechaInicio, fechaFin);
 
     //cambiando los tickValues y dando zoom para el 1er Grafico
-    chart.internal.config.axis_x_tick_values = ticks;
-    chart.zoom(dominio);
+    charts[0].internal.config.axis_x_tick_values = ticks;
+    charts[0].zoom(dominio);
 
     //cambiando los tickValues y dando zoom para el 2do Grafico
-    chart2.internal.config.axis_x_tick_values = ticks;
-    chart2.zoom(dominio);
+    charts[1].internal.config.axis_x_tick_values = ticks;
+    charts[1].zoom(dominio);
 
-    chart3.internal.brush.extent(dominio).update();
+    charts[2].internal.brush.extent(dominio).update();
 }
 
 function m_generateTicks(fechaInicio, fechaFin) {
@@ -807,7 +806,7 @@ function m_generateTicks(fechaInicio, fechaFin) {
 
 //Dev la cant de ticks posibles segun el ancho de la grafica
 function m_cantTicksPosibles() {
-    var width = +d3.select('#' + chart.element.id + " svg .c3-zoom-rect").attr("width");
+    var width = +d3.select('#' + charts[0].element.id + " svg .c3-zoom-rect").attr("width");
     width = +width.toFixed();
 
     var dateWidth = 85; // 85 es aproximadamente por exceso el ancho que toma una fecha
