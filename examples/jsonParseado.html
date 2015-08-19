@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="vendor/css/c3.css">
+    <link rel="stylesheet" type="text/css" href="vendor/css/ajustes_c3.css">
+    <link rel="stylesheet" type="text/css" href="vendor/css/iconos.css">
+</head>
+<body>
+<div id="my-c3-chart" class="text-center col-md-12" style=" width: 95%">
+    <h1>Gr&aacute;fica Financiera</h1>
+
+    <div id="chart-header"></div>
+    <div id="chart"></div>
+    <div id="chart2"></div>
+    <div id="chart3"></div>
+</div>
+<script>
+    var fechaInicio = "2013-01-02";
+    var fechaFin = "2015-08-18";
+    var locale = "es";
+    var formato = '%Y-%m-%d';
+    var total_datos = 50;
+
+    //Periodos
+    var periodos = [
+        {
+            texto: "1d",
+            cantidad: 1,
+            tipo: "dia",
+            seleccionado: false
+        }, {
+            texto: "5d",
+            cantidad: 5,
+            tipo: "dia",
+            seleccionado: false
+        }, {
+            texto: "1m",
+            cantidad: 1,
+            tipo: "mes",
+            seleccionado: true
+        },
+        {
+            texto: "3m",
+            cantidad: 3,
+            tipo: "mes",
+            seleccionado: false
+        },
+        {
+            texto: "6m",
+            cantidad: 6,
+            tipo: "mes",
+            seleccionado: false
+        },
+        {
+            texto: "YTD",
+            cantidad: 0,
+            tipo: "hasta_la_fecha",
+            seleccionado: false
+        },
+        {
+            texto: "1y",
+            cantidad: 1,
+            tipo: "anno",
+            seleccionado: false
+        },
+        {
+            texto: "2y",
+            cantidad: 2,
+            tipo: "anno",
+            seleccionado: false
+        },
+        {
+            texto: "5y",
+            cantidad: 5,
+            tipo: "anno",
+            seleccionado: false
+        }
+    ];
+
+    //Datos para la grafica de linea
+    var datos = {
+        x: 'x',
+        columns: [],
+        type: 'line' // especifico que es de linea
+    };
+
+    //Datos para la grafica del volumen
+    var datos_volumen = {
+        x: 'x',
+        columns: [],
+        type: 'bar' // grafica una grafica de barra
+    };
+
+    //Datos para la grafica de area
+    var datos_area = {
+        x: 'x',
+        columns: [],
+        type: 'area' // especifica que es de area
+    };
+
+</script>
+<script src="vendor/d3.v3.min.js" charset="utf-8"></script>
+<script src="vendor/c3.js"></script>
+<script src="vendor/jQuery.js"></script>
+<script src="../build/c3haikus.js"></script>
+<script src="tres.js"></script>
+<script src="html2canvas.js"></script>
+<script src="html2canvas.svg.js"></script>
+<script>
+    $.ajax({
+        url:'http://marktdaten.herokuapp.com/historicos/4.json?callback=callback',
+        async: false,
+        dataType: 'jsonp',
+        jsonpCallback: 'jsonCallback',
+        contentType: "application/json",
+        success: function(json) {
+            var fechas = ["x"];
+            var maxcom = ["MAXCOM"];
+            var ipc = ["IPC"];
+            var yahoo = ["YAHOO"];
+            var volume_maxcom = ["MAXCOM"];
+            var results = json.precios;
+            for(var i=0;i<results.length;i++){
+                fechas.push(results[i].date)
+                maxcom.push(results[i].value)
+              //  ipc.push(results[i].price)
+               // yahoo.push(results[i].price)
+                volume_maxcom.push(results[i].volume)
+            }
+            datos.columns = [fechas, maxcom];
+            datos_volumen.columns = [fechas, volume_maxcom];
+            datos_area.columns = [fechas, maxcom];
+//            datos_volumen ={
+//                json:precios,
+//                keys: {
+//                    x: 'date', // it's possible to specify 'x' when category axis
+//                    value: ['volume']
+//                },
+//                type:'bar'
+//            };
+//            datos_area = {
+//                json:precios,
+//                keys: {
+//                    x: 'date', // it's possible to specify 'x' when category axis
+//                    value: ['value']
+//                },
+//                type: 'area'
+//            };
+//            datos = {
+//                json:precios,
+//                keys: {
+//                    x: 'date', // it's possible to specify 'x' when category axis
+//                    value: ['value']
+//                }
+//            };
+            fechaInicio = results[0].date;
+            fechaFin = results[results.length-1].date;
+            datos.onmouseover = function (d) {
+                showTooltip(1, d3.event, d)
+            }
+
+            //Cuando se mueve el mouse por la grafica de volumen
+            datos_volumen.onmouseover = function (d) {
+                showTooltip(0, d3.event, d)
+            }
+
+            ticker_symbol = "MAXCOM";
+            InitData();
+            win_resize();
+            var fechaInicioD =  parseDate(fechaFin);
+            var fechaFinD =  parseDate(fechaFin);
+            fechaInicioD.setMonth(fechaInicioD.getMonth()-1);
+            setTimeout(function() {
+                m_updateGrafica(fechaInicioD, fechaFinD);
+            }, 500);
+
+           // m_updateGrafica(fechaInicioD, fechaFinD);
+            //            console.dir(json.sites);
+        }
+
+    });
+
+
+</script>
+</body>
+</html>

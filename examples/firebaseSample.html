@@ -118,22 +118,46 @@
 <script src="html2canvas.js"></script>
 <script src="html2canvas.svg.js"></script>
 <script >
-//LOAD DATA
-datos_aleatorios(100);
- var fechaInicio = datos.columns[0][1];
- var fechaFin =   datos.columns[0][datos.columns[0].length-1];
-//Cuando se mueve el mouse por la grafica de volumen
-datos.onmouseover = function (d) {
-    showTooltip(1, d3.event, d)
-}
-//Cuando se mueve el mouse por la grafica de volumen
-datos_volumen.onmouseover = function (d) {
-    showTooltip(0, d3.event, d)
-}
-InitData();
-win_resize();
-mostrar_periodo_seleccionado();
+    //load data
+    var results = [];
+    console.log("funciona");
+    var myFirebaseRef = new Firebase("https://yoi2.firebaseio.com/");
+    console.log(myFirebaseRef);
+    myFirebaseRef.child("precios_intradia/MAXCOMCPO/Historico").on("value", function(snapshot) {
+        console.log(snapshot.val())
+        results = snapshot.val();
+        var fechas = ["x"];
+        var maxcom = ["MAXCOM"];
+        var ipc = ["IPC"];
+        var yahoo = ["YAHOO"];
+        var volume_maxcom = ["MAXCOM"];
+        for(var i=0;i<results.length;i++){
+            fechas.splice(1,0,results[i].date)
+            maxcom.splice(1,0,results[i].price)
+            ipc.splice(1,0,results[i].price)
+            yahoo.splice(1,0,results[i].price)
+            volume_maxcom.splice(1,0,results[i].volume)
+        }
+        datos.columns = [fechas, maxcom, ipc, yahoo];
+        datos_volumen.columns = [fechas, volume_maxcom];
+        datos_area.columns = [fechas, maxcom];
 
+        datos.onmouseover = function (d) {
+            showTooltip(1, d3.event, d)
+        }
+
+        //Cuando se mueve el mouse por la grafica de volumen
+        datos_volumen.onmouseover = function (d) {
+            showTooltip(0, d3.event, d)
+        }
+        //var data2 = datos_aleatorios(10);
+        //console.log(data2);
+        // Alerts "San Francisco"
+        InitData();
+        win_resize();
+        mostrar_periodo_seleccionado();
+
+    });
 </script>
 </body>
 </html>
