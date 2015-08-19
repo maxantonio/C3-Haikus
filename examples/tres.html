@@ -153,7 +153,17 @@
             ticker_symbol = "MAXCOM";
             InitData();
             win_resize();
-            mostrar_periodo_seleccionado();
+
+
+
+            var fechaInicioD =  parseDate(fechaFin);
+            var fechaFinD =  parseDate(fechaFin);
+            fechaInicioD.setMonth(fechaInicioD.getMonth()-1);
+            setTimeout(function() {
+                m_updateGrafica(fechaInicioD, fechaFinD);
+            }, 500);
+
+           // m_updateGrafica(fechaInicioD, fechaFinD);
             //            console.dir(json.sites);
         }
 
