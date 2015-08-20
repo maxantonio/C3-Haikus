@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <!-- Firebase -->
+    <script src="https://cdn.firebase.com/js/client/2.2.8/firebase.js"></script>
+    <title></title>
+</head>
+<body>
+<label>
+    change:
+</label>
+<div id="change">
+</div>
+<label>
+    date:
+</label>
+<div id="date">
+</div>
+<label>
+    max:
+</label>
+<div id="max">
+</div>
+<label>
+    min:
+</label>
+<div id="min">
+</div>
+<label>
+    price:
+</label>
+<div id="price">
+</div>
+<label>
+    time:
+</label>
+<div id="time">
+</div>
+<label>
+    volume:
+</label>
+<div id="volume">
+</div>
+    <script >
+    var myFirebaseRef = new Firebase("https://yoi2.firebaseio.com");
+    myFirebaseRef.child("dashboards/IPC").on("value", function(snapshot) {
+        IPC = snapshot.val();
+        $('#change').html(IPC.change);
+        $('#price').html(IPC.price);
+        $('#max').html(IPC.max);
+        $('#volume').html(IPC.volume);
+        $('#time').html(IPC.time);
+        $('#max').html(IPC.max);
+        $('#min').html(IPC.min);
+    });
+</script>
+
+</body>
+</html>
