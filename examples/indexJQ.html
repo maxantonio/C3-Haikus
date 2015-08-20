@@ -8,52 +8,106 @@
     <title></title>
 </head>
 <body>
+<div id="IPC">
+    <H2>DATOS DE IPC</H2>
 <label>
     change:
 </label>
-<div id="change">
+<div class="change">
 </div>
 <label>
     date:
 </label>
-<div id="date">
+<div class="date">
 </div>
 <label>
     max:
 </label>
-<div id="max">
+<div class="max">
 </div>
 <label>
     min:
 </label>
-<div id="min">
+<div class="min">
 </div>
 <label>
     price:
 </label>
-<div id="price">
+<div class="price">
 </div>
 <label>
     time:
 </label>
-<div id="time">
+<div class="time">
 </div>
 <label>
     volume:
 </label>
-<div id="volume">
+<div class="volume">
+</div>
+</div>
+
+<div id="TERRA">
+    <H2>DATOS DE TERRA 13</H2>
+    <label>
+        change:
+    </label>
+    <div class="change">
+    </div>
+    <label>
+        date:
+    </label>
+    <div class="date">
+    </div>
+    <label>
+        max:
+    </label>
+    <div class="max">
+    </div>
+    <label>
+        min:
+    </label>
+    <div class="min">
+    </div>
+    <label>
+        price:
+    </label>
+    <div class="price">
+    </div>
+    <label>
+        time:
+    </label>
+    <div class="time">
+    </div>
+    <label>
+        volume:
+    </label>
+    <div class="volume">
+    </div>
 </div>
     <script >
     var myFirebaseRef = new Firebase("https://yoi2.firebaseio.com");
-    myFirebaseRef.child("dashboards/IPC").on("value", function(snapshot) {
-        IPC = snapshot.val();
-        $('#change').html(IPC.change);
-        $('#price').html(IPC.price);
-        $('#max').html(IPC.max);
-        $('#volume').html(IPC.volume);
-        $('#time').html(IPC.time);
-        $('#max').html(IPC.max);
-        $('#min').html(IPC.min);
+    myFirebaseRef.child("dashboards").on("value", function(snapshot) {
+        dashboard = snapshot.val();
+        //CARGANDO IPC
+        IPC = dashboard.IPC;
+        $('#IPC .change').html(IPC.change);
+        $('#IPC .price').html(IPC.price);
+        $('#IPC .max').html(IPC.max);
+        $('#IPC .volume').html(IPC.volume);
+        $('#IPC .time').html(IPC.time);
+        $('#IPC .max').html(IPC.max);
+        $('#IPC .min').html(IPC.min);
+
+        //CARGANDO TERRA13
+        TERRA = dashboard.TERRA13.accion_intradia;
+        $('#TERRA .change').html(TERRA.change);
+        $('#TERRA .price').html(TERRA.price);
+        $('#TERRA .max').html(TERRA.max);
+        $('#TERRA .volume').html(TERRA.volume);
+        $('#TERRA .time').html(TERRA.time);
+        $('#TERRA .max').html(TERRA.max);
+        $('#TERRA .min').html(TERRA.min);
     });
 </script>
 
